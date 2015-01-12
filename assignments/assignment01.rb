@@ -85,6 +85,7 @@ def palindrome?(s)
   characters_input = s.downcase.split ""
 
   # remove non-letters
+  # char.match(regexp) quoted from stackoverflow: http://stackoverflow.com/questions/10637606/doesnt-ruby-have-isalpha
   string_cleaned_input = ""
   characters_input.each do |some_symbol|
     if some_symbol.match(/^[[:alpha:]]$/)
