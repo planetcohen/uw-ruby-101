@@ -39,6 +39,14 @@ end
 # and returns the same string with each word capitalized.
 def titleize(s)
   # your implementation here
+  string_words = s.split " "
+
+  result = ""
+  string_words.each do |word|
+    result << word.downcase.capitalize << " "
+  end
+  
+  result.chop
 end
 
 # Your method should generate the following results:
@@ -54,6 +62,12 @@ titleize "gooDbye CRUel wORLD"  #=> "Goodbye Cruel World"
 # You may *not* use the built-in `reverse` method
 def my_reverse(s)
   # your implementation here
+  result = ""
+  (1..s.length).each do |i|
+    result[i-1] = s[s.length-i]
+  end
+
+  result
 end
 
 # Your method should generate the following results:
@@ -68,7 +82,22 @@ my_reverse "Goodbye Cruel World"  #=> "dlroW leurC eybdooG"
 # Write a method `palindrome?`
 # that determines whether a string is a palindrome
 def palindrome?(s)
-  # your implementation here
+  characters_input = s.downcase.split ""
+
+  # remove non-letters
+  string_cleaned_input = ""
+  characters_input.each do |some_symbol|
+    if some_symbol.match(/^[[:alpha:]]$/)
+      string_cleaned_input << some_symbol
+    end
+  end
+
+  string_reversed = ""
+  (1..string_cleaned_input.length).each do |i|
+    string_reversed[i-1] = string_cleaned_input[string_cleaned_input.length-i]
+  end
+
+  string_cleaned_input == string_reversed
 end
 
 # Your method should generate the following results:
