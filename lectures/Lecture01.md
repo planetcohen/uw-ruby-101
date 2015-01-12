@@ -8,7 +8,7 @@ slidenumbers: true
 -
 
 # [fit] Lecture 1
-# [fit] Jan 8, 2015
+# [fit] Jan 9, 2015
 
 
 ---
