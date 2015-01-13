@@ -38,19 +38,20 @@ end
 # it accepts a string
 # and returns the same string with each word capitalized.
 def titleize(s)
-	#get array of words in the s
+  #get array of words in the s
   words_in_s = s.split " "
 
-	#make a string with all the words capitalized
-	titlized_s = ""
-	words_in_s.each do |w|
+  #make a string with all the words capitalized
+  titlized_s = ""
+  words_in_s.each do |w|
     titlized_s << w.capitalize
-		titlized_s << " "
-	end	
-	#remove the last space
+    titlized_s << " "
+  end 
+
+  #remove the last space
   titlized_s.chop!
 
-	return titlized_s
+  return titlized_s
 end
 
 # Your method should generate the following results:
@@ -65,24 +66,24 @@ titleize "gooDbye CRUel wORLD"  #=> "Goodbye Cruel World"
 # Write your own implementation of `reverse` called `my_reverse`
 # You may *not* use the built-in `reverse` method
 def my_reverse(s)
-	#put string into an array
-	char_in_s = s.split(//)
-	
-	#reverse character array
-	reverse_c = []
-	i = 1
-	char_in_s.each do |c|
-		reverse_c[s.length-i] = c
-		i = i+1
-	end
+  #put string into an array
+  char_in_s = s.split(//)
 
-	#append each character in the reverse order
-	reverse_s = ""
-	reverse_c.each do |c|
-	  reverse_s << c
-	end
+  #reverse character array
+  reverse_c = []
+  i = 1
+  char_in_s.each do |c|
+    reverse_c[s.length-i] = c
+    i = i+1
+  end
 
-	return reverse_s
+  #append each character in the reverse order
+  reverse_s = ""
+  reverse_c.each do |c|
+    reverse_s << c
+  end
+
+  return reverse_s
 
 end
 
@@ -98,14 +99,17 @@ my_reverse "Goodbye Cruel World"  #=> "dlroW leurC eybdooG"
 # Write a method `palindrome?`
 # that determines whether a string is a palindrome
 def palindrome?(s)
-	#make all the letters lower case
-	original = s.downcase
-	#remove all non alphanumeric characters
-	original.gsub!(/[^\p{Alnum}-]/, '')
-	#save a reverse copy
-	reverse = original.reverse
-	#compare and return results
-	return reverse == original ? true : false 
+  #make all the letters lower case
+  original = s.downcase
+
+  #remove all non alphanumeric characters
+  original.gsub!(/[^\p{Alnum}-]/, '')
+
+  #save a reverse copy
+  reverse = original.reverse
+
+  #compare and return results
+  return reverse == original ? true : false 
 end
 
 # Your method should generate the following results:
