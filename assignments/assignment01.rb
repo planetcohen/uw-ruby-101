@@ -38,7 +38,19 @@ end
 # it accepts a string
 # and returns the same string with each word capitalized.
 def titleize(s)
-  # your implementation here
+  # first downcase the entire string
+  s.downcase!
+ 
+  # then split the string into individual word elements
+  word_elements = s.split
+ 
+  # iterate over all elements in the array, capitalize each word
+  word_elements.each do |word|
+    word.capitalize!
+  end
+ 
+  # join the array back into a string and insert proper spaces
+  word_elements.join " "
 end
 
 # Your method should generate the following results:
@@ -53,7 +65,24 @@ titleize "gooDbye CRUel wORLD"  #=> "Goodbye Cruel World"
 # Write your own implementation of `reverse` called `my_reverse`
 # You may *not* use the built-in `reverse` method
 def my_reverse(s)
-  # your implementation here
+  # find the length of the string
+  i = s.length
+ 
+  # split the string into an array of characters
+  chars = s.split ""
+ 
+  # initialize the string where we'll put the result
+  result = ''
+ 
+  # index the characters, call the characters back starting with the last character 
+  # as defined by the length of the original string
+  while i > 0
+    i -= 1
+   result += chars[i]
+  end
+ 
+  # return the result string
+  return result
 end
 
 # Your method should generate the following results:
@@ -68,7 +97,9 @@ my_reverse "Goodbye Cruel World"  #=> "dlroW leurC eybdooG"
 # Write a method `palindrome?`
 # that determines whether a string is a palindrome
 def palindrome?(s)
-  # your implementation here
+  # strip out non alpha characters, downcase, check to see if the reverse is equivalent to the original string
+  # (must strip out non alpha characters to handle the last example case)
+  s.downcase.gsub(/[^a-z]/, '') == s.downcase.reverse.gsub(/[^a-z]/, '')
 end
 
 # Your method should generate the following results:
