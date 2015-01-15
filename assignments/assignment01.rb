@@ -37,14 +37,14 @@ end
 
 # it accepts a string
 # and returns the same string with each word capitalized.
-def titleize(s)
-  # your implementation here
+
+def titleize(input)
+
+  word = input.split.each { |x| x.downcase.capitalize! }.join(' ')
+  
+  puts word.chomp
+
 end
-
-# Your method should generate the following results:
-titleize "hEllo WORLD"          #=> "Hello World"
-
-titleize "gooDbye CRUel wORLD"  #=> "Goodbye Cruel World"
 
 
 # ========================================================================================
@@ -52,14 +52,19 @@ titleize "gooDbye CRUel wORLD"  #=> "Goodbye Cruel World"
 
 # Write your own implementation of `reverse` called `my_reverse`
 # You may *not* use the built-in `reverse` method
-def my_reverse(s)
-  # your implementation here
+
+def my_reverse(input)
+
+  length = input.length
+  reverse = ""
+
+  for i in 1..length do
+    reverse += input[-1*i]
+  end
+
+  puts reverse
+
 end
-
-# Your method should generate the following results:
-my_reverse "Hello World"          #=> "dlroW olleH"
-
-my_reverse "Goodbye Cruel World"  #=> "dlroW leurC eybdooG"
 
 
 # ========================================================================================
@@ -67,14 +72,19 @@ my_reverse "Goodbye Cruel World"  #=> "dlroW leurC eybdooG"
 
 # Write a method `palindrome?`
 # that determines whether a string is a palindrome
-def palindrome?(s)
-  # your implementation here
+
+def palindrome?(input)
+
+  word = input.downcase.scan(/\w/)
+
+  checker = ""
+
+  if word == word.reverse
+    checker << "true"
+  else
+    checker << "false"
+  end
+
+  puts checker
+
 end
-
-# Your method should generate the following results:
-palindrome? "abba"                             #=> true
-palindrome? "aBbA"                             #=> true
-palindrome? "abb"                              #=> false
-
-palindrome? "Able was I ere I saw elba"        #=> true
-palindrome? "A man, a plan, a canal, Panama"   #=> true
