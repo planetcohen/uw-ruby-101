@@ -10,7 +10,7 @@ def number_to_string(n, lang)
   
   digit_strings = lang_digit_strings[lang]
   return "no such language" if digit_strings.nil?
-
+  
   s = n.to_s
   string_digits = s.split ""
 
@@ -38,13 +38,17 @@ end
 # it accepts a string
 # and returns the same string with each word capitalized.
 def titleize(s)
-  # your implementation here
+  a = s.split(" ")
+  b = a.map {|x| x.upcase[0]+x[1..-1].downcase}
+  puts b.join(" ")
 end
 
 # Your method should generate the following results:
-titleize "hEllo WORLD"          #=> "Hello World"
+titleize("hEllo WORLD")          #=> "Hello World"
 
-titleize "gooDbye CRUel wORLD"  #=> "Goodbye Cruel World"
+titleize("gooDbye CRUel wORLD")  #=> "Goodbye Cruel World"
+puts "---END OF PROBLEM 1---"
+puts ""
 
 
 # ========================================================================================
@@ -53,14 +57,22 @@ titleize "gooDbye CRUel wORLD"  #=> "Goodbye Cruel World"
 # Write your own implementation of `reverse` called `my_reverse`
 # You may *not* use the built-in `reverse` method
 def my_reverse(s)
-  # your implementation here
+  index = s.length 
+  array = []
+  s.length.times do index -= 1
+    array << s[index]
+    if array.length == s.length
+      puts array.join
+    end
+  end
 end
 
 # Your method should generate the following results:
-my_reverse "Hello World"          #=> "dlroW olleH"
+my_reverse("Hello World")          #=> "dlroW olleH"
 
-my_reverse "Goodbye Cruel World"  #=> "dlroW leurC eybdooG"
-
+my_reverse("Goodbye Cruel World")  #=> "dlroW leurC eybdooG"
+puts "---END OF PROBLEM 2---"
+puts ""
 
 # ========================================================================================
 #  Problem 3 - `palindrome?`
@@ -68,13 +80,20 @@ my_reverse "Goodbye Cruel World"  #=> "dlroW leurC eybdooG"
 # Write a method `palindrome?`
 # that determines whether a string is a palindrome
 def palindrome?(s)
-  # your implementation here
+  g = s.gsub(/\W+/, "")
+  f = g.downcase
+  if f.reverse == f
+    puts "true"
+  else
+    puts "false"
+  end
 end
 
 # Your method should generate the following results:
-palindrome? "abba"                             #=> true
-palindrome? "aBbA"                             #=> true
-palindrome? "abb"                              #=> false
+palindrome?("abba")                             #=> true
+palindrome?("aBbA")                             #=> true
+palindrome?("abb")                             #=> false
 
-palindrome? "Able was I ere I saw elba"        #=> true
-palindrome? "A man, a plan, a canal, Panama"   #=> true
+palindrome?("Able was I ere I saw elba")       #=> true
+palindrome?("A man, a plan, a canal, Panama")   #=> true
+puts "---END OF PROBLEM 3---"
