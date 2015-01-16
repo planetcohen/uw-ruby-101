@@ -38,16 +38,12 @@ end
 # it accepts a string
 # and returns the same string with each word capitalized.
 def titleize(s)
-  # John Smith 2015jan12
-
-  string_words = s.split " "
-
-  result = ""
-  string_words.each do |word|
-    result << word.downcase.capitalize << " "
+  words = s.split
+  caps = []
+  words.each do |word|
+    caps << word.capitalize
   end
-  
-  result.chop
+  caps.join " "
 end
 
 # Your method should generate the following results:
@@ -62,14 +58,14 @@ titleize "gooDbye CRUel wORLD"  #=> "Goodbye Cruel World"
 # Write your own implementation of `reverse` called `my_reverse`
 # You may *not* use the built-in `reverse` method
 def my_reverse(s)
-  # John Smith 2015jan12
-
-  result = ""
-  (1..s.length).each do |i|
-    result[i-1] = s[s.length-i]
+  output = ""
+  letters = s.split ""
+  n = letters.length
+  while n > 0
+    n -= 1
+    output << letters[n]
   end
-
-  result
+  output
 end
 
 # Your method should generate the following results:
@@ -84,24 +80,8 @@ my_reverse "Goodbye Cruel World"  #=> "dlroW leurC eybdooG"
 # Write a method `palindrome?`
 # that determines whether a string is a palindrome
 def palindrome?(s)
-  # John Smith 2015jan12
-
-  characters_input = s.downcase.split ""
-  # remove non-letters
-  # char.match(regexp) quoted from stackoverflow: http://stackoverflow.com/questions/10637606/doesnt-ruby-have-isalpha
-  string_cleaned_input = ""
-  characters_input.each do |some_symbol|
-    if some_symbol.match(/^[[:alpha:]]$/)
-      string_cleaned_input << some_symbol
-    end
-  end
-
-  string_reversed = ""
-  (1..string_cleaned_input.length).each do |i|
-    string_reversed[i-1] = string_cleaned_input[string_cleaned_input.length-i]
-  end
-
-  string_cleaned_input == string_reversed
+  stripped = s.delete(" ").delete(",").downcase
+  stripped == stripped.reverse
 end
 
 # Your method should generate the following results:
