@@ -39,12 +39,31 @@ to_sentence [1, "paul", 3, "ringo"]  #=> "1, paul, 3 and ringo"
 #  Problem 2 - `mean, median`
 
 # implement methods "mean", "median" on Array of numbers
-def mean(ary)
-  # your implementation here
+def mean(ary, keep_precision=false) # sometimes I might want to be sure I got a float back...
+  if keep_precision
+    return ary.inject(:+) / ary.length.to_f
+  else
+    return ary.inject(:+) / ary.length
+  end
 end
 
 def median(ary)
-  # your implementation here
+  # If there are two middle numbers, they must be averaged
+  if ary.length % 2 == 0
+    sorted_array = ary.sort
+    last_index = sorted_array.length - 1
+    middle_index_1 = sorted_array.length / 2
+    middle_index_2 = ( last_index / 2 ).floor
+    average_of_middles = ( sorted_array[middle_index_1].to_f + sorted_array[middle_index_2].to_f ) / 2
+    # No need to return a float if it's really just an integer...
+    if ( average_of_middles % 1 ) == 0
+      return average_of_middles.to_i
+    else
+      return average_of_middles
+    end
+  else # If there is one middle number, just do the simplest thing
+    return ary.sort[ary.length / 2]
+  end
 end
 
 # Your method should generate the following results:
