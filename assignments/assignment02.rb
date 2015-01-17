@@ -9,8 +9,23 @@
 
 # creates an english string from array
 
-def to_sentence(ary)
-  # your implementation here
+def to_sentence(ary, punctuate=false) # Optionally capitalizes the 1st word & appends a period (just for fun...)
+  new_string = ""
+  last_index = ary.length - 1
+  ary.each_with_index do |word, index|
+    if index == last_index
+      new_string << word.to_s
+    elsif index == ( last_index - 1 )
+      new_string << word.to_s << " and "
+    else
+      new_string << word.to_s << ", "
+    end
+  end
+  if punctuate
+    return new_string.capitalize << "."
+  else
+    return new_string
+  end
 end
 
 # Your method should generate the following results:
