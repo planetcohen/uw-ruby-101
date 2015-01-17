@@ -78,8 +78,12 @@ median [1, 1, 4]  #=> 1
 #  Problem 3 - `pluck`
 
 # implement method `pluck` on array of hashes
-def pluck(ary)
-  # your implementation here
+def pluck(ary, key)
+  new_array = Array.new
+  ary.each do |hash|
+    new_array << hash[key]
+  end
+  return new_array
 end
 
 # Your method should generate the following results:
