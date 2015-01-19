@@ -42,6 +42,7 @@ def titleize(s)
   cap_sentence = ""
   my_words.each {|w| cap_sentence << w.capitalize << " "} 
   cap_sentence.chop
+
 end
 
 # Your method should generate the following results:
@@ -61,6 +62,7 @@ def my_reverse(s)
   s_array.each { |c| s_array_reverse.insert(0, c)
   end
   s_reverse = s_array_reverse.join
+
 
 end
 
@@ -84,6 +86,7 @@ def palindrome?(s)
   else
     false
   end
+
 end
 
 # Your method should generate the following results:
