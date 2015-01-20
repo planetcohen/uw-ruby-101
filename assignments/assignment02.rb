@@ -72,7 +72,6 @@ records = [
 ]
 pluck records, :name        #=> ["John", "Paul", "George", "Ringo"]
 
-
 pluck records, :instrument  #=> ["guitar", "bass", "guitar", "drums"]
 
 
@@ -90,3 +89,10 @@ pluck records, :instrument  #=> ["guitar", "bass", "guitar", "drums"]
 # - daily balance
 # - summary:
 #   - starting balance, total deposits, total withdrawals, ending balance
+
+file.open("assignment02-input.csv", "r") do |infile|
+	records = file.readlines.map do |inline|
+		
+	end
+
+end
