@@ -67,8 +67,8 @@ def median(ary)
 end
 
 # Your method should generate the following results:
-mean [1, 2, 3]    #=> 2
-mean [1, 1, 4]    #=> 2
+mean [1, 2, 3]    #=> 2.0
+mean [1, 1, 4]    #=> 2.0
 
 median [1, 2, 3]  #=> 2
 median [1, 1, 4]  #=> 1
@@ -79,11 +79,15 @@ median [1, 1, 4]  #=> 1
 
 # implement method `pluck` on array of hashes
 def pluck(ary, key)
+
   new_array = Array.new
+
   ary.each do |hash|
     new_array << hash[key]
   end
+
   return new_array
+
 end
 
 # Your method should generate the following results:
