@@ -38,6 +38,7 @@ end
 # it accepts a string
 # and returns the same string with each word capitalized.
 def titleize(s)
+  s.downcase.split.each { |w| w.capitalize! }.join " "
   words = s.split
   caps = []
   words.each do |word|
@@ -58,6 +59,9 @@ titleize "gooDbye CRUel wORLD"  #=> "Goodbye Cruel World"
 # Write your own implementation of `reverse` called `my_reverse`
 # You may *not* use the built-in `reverse` method
 def my_reverse(s)
+  a = Array.new
+  s.split("").each { |c| a.unshift c }
+  a.join
   output = ""
   letters = s.split ""
   n = letters.length
@@ -80,6 +84,8 @@ my_reverse "Goodbye Cruel World"  #=> "dlroW leurC eybdooG"
 # Write a method `palindrome?`
 # that determines whether a string is a palindrome
 def palindrome?(s)
+  @s = s.downcase.gsub(/\s+/m, '').gsub(/,/, '')
+  @s == @s.reverse
   stripped = s.delete(" ").delete(",").downcase
   stripped == stripped.reverse
 end
@@ -91,3 +97,4 @@ palindrome? "abb"                              #=> false
 
 palindrome? "Able was I ere I saw elba"        #=> true
 palindrome? "A man, a plan, a canal, Panama"   #=> true
+
