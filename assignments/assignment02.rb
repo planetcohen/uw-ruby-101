@@ -39,12 +39,8 @@ to_sentence [1, "paul", 3, "ringo"]  #=> "1, paul, 3 and ringo"
 #  Problem 2 - `mean, median`
 
 # implement methods "mean", "median" on Array of numbers
-def mean(ary, keep_precision=false) # sometimes I might want to be sure I got a float back...
-  if keep_precision
-    return ary.inject(:+) / ary.length.to_f
-  else
-    return ary.inject(:+) / ary.length
-  end
+def mean(ary)
+  ary.inject(:+) / ary.length.to_f
 end
 
 def median(ary)
