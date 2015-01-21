@@ -90,9 +90,11 @@ pluck records, :instrument  #=> ["guitar", "bass", "guitar", "drums"]
 # - summary:
 #   - starting balance, total deposits, total withdrawals, ending balance
 
-file.open("assignment02-input.csv", "r") do |infile|
-	records = file.readlines.map do |inline|
-		
+File.open("assignment02-input.csv", "r") do |infile|
+	records = infile.readlines.map do |inline|
+		f = inline.split(",")
+		{date: f[0], payee: f[1], amount: f[2], type: f[3]}
 	end
-
 end
+
+
