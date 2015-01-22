@@ -106,6 +106,10 @@ withdrawals.sort_by! {|x| x[:date]}
 deposits = transactions.select {|h| h[:type] == 'deposit' }
 deposits.sort_by! {|x| x[:date]}
 
+def get_totals(records)
+  amounts = records.map {|r| r[:amount].to_f }
+  amounts.reduce(0) { |val, acc| val + acc }.to_f
+end
 
 def mean(ary)
   tot = ary.reduce {|i, acc| i + acc }
@@ -114,15 +118,14 @@ end
 
 def get_daily_balance(transactions)
   days = transactions.map {|t| t[:date]}.uniq
+  days.sort_by! {|d| d.split('/')[1].to_i}
   puts days.inspect
-  transactions_by_day = days.reduce([]) do |day, acc|
+  transactions_by_day = days.reduce({}) do |day, acc|
     acc[day] = transactions.select {|t| t[:date] == day}
   end
-  #puts transactions_by_day
-  
-  
+  puts transactions_by_day
 end
-get_daily_balance(withdrawals)
+get_daily_balance(deposits)
 
 def render_record(rec)
 <<RECORD
@@ -144,8 +147,7 @@ def render_table_header()
 HEADER
 end
 
-def render_header(record)
-  
+def render_header(record) 
 end
 
 def render_records(records)
@@ -159,18 +161,30 @@ end
 
 def render_body(title, records)
 <<BODY
-  <body>
     <h1>#{title}</h1>
     #{render_records(records)}
-  </body>
 BODY
 end
 
+def render_totals(transactions)
+  
+end
+
+def get_ending_balance(beginning_balance, tot_withdrawals, tot_deposits)
+  beginning_balance.to_f - tot_withdrawals.to_f + tot_deposits.to_f
+end
+
+total_deposits = get_totals(deposits)
+total_withdrawals = get_totals(withdrawals)
+
 File.open('assignment02-out.htm', "w") do |outfile|
-  outfile.puts "<HTML>"
+  outfile.puts "<HTML><BODY>"
   outfile.puts render_body("Withdrawals", withdrawals)
   outfile.puts render_body("Deposits", deposits)
-  outfile.puts "</HTML>"
+  outfile.puts "<p>Total withdrawals: $#{total_withdrawals}</p>"
+  outfile.puts "<p>Total deposits: $#{total_deposits}</p>"
+  outfile.puts "<p>Final Balance: $#{get_ending_balance(0, total_withdrawals, total_deposits)}</p>"
+  outfile.puts "</BODY></HTML>"
 end
 
 
