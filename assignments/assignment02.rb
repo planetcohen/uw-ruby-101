@@ -58,7 +58,7 @@ def pluck(ary, key)
   # your implementation here
   out_array = []
   ary.each do |h|
-  	out_array << h[key]
+    out_array << h[key]
   end
   out_array
 end
@@ -89,12 +89,91 @@ pluck records, :instrument  #=> ["guitar", "bass", "guitar", "drums"]
 # - daily balance
 # - summary:
 #   - starting balance, total deposits, total withdrawals, ending balance
-
-File.open("assignment02-input.csv", "r") do |infile|
-	records = infile.readlines.map do |inline|
-		f = inline.split(",")
-		{date: f[0], payee: f[1], amount: f[2], type: f[3]}
-	end
+def create_transaction_hash( date, payee, amount, type )
+  { date: date, payee: payee, amount: amount, type: type }
 end
+
+records = []
+transactions = File.open('assignment02-input.csv', "r") do |infile|
+  records = infile.readlines.map do |inline|
+    f = inline.chomp.split(",")
+    create_transaction_hash(f[0], f[1], f[2], f[3])
+  end
+end
+
+withdrawals = transactions.select {|h| h[:type] == 'withdrawal' }
+withdrawals.sort_by! {|x| x[:date]}
+deposits = transactions.select {|h| h[:type] == 'deposit' }
+deposits.sort_by! {|x| x[:date]}
+
+
+def mean(ary)
+  tot = ary.reduce {|i, acc| i + acc }
+  avg = tot.to_f/ary.length
+end
+
+def get_daily_balance(transactions)
+  days = transactions.map {|t| t[:date]}.uniq
+  puts days.inspect
+  transactions_by_day = days.reduce([]) do |day, acc|
+    acc[day] = transactions.select {|t| t[:date] == day}
+  end
+  #puts transactions_by_day
+  
+  
+end
+get_daily_balance(withdrawals)
+
+def render_record(rec)
+<<RECORD
+<tr>
+  <td>#{rec[:date]}</td>
+  <td>#{rec[:payee]}</td>
+  <td>$#{rec[:amount]}</td>
+<tr>
+RECORD
+end
+
+def render_table_header()
+<<HEADER
+<tr>
+  <th>Date</th>
+  <th>Payee</th>
+  <th>Amount</th>
+<tr>
+HEADER
+end
+
+def render_header(record)
+  
+end
+
+def render_records(records)
+<<RECORDS
+<table style="width:30%">
+  #{render_table_header}
+  #{records.map {|r| render_record(r)}.join "\n"}
+</table>
+RECORDS
+end
+
+def render_body(title, records)
+<<BODY
+  <body>
+    <h1>#{title}</h1>
+    #{render_records(records)}
+  </body>
+BODY
+end
+
+File.open('assignment02-out.htm', "w") do |outfile|
+  outfile.puts "<HTML>"
+  outfile.puts render_body("Withdrawals", withdrawals)
+  outfile.puts render_body("Deposits", deposits)
+  outfile.puts "</HTML>"
+end
+
+
+
 
 
