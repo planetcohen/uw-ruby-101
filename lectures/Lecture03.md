@@ -47,8 +47,16 @@ def mean(ary)
 end
 
 def median(ary)
-  mid = ary.length / 2
-  ary[mid]
+  sorted_ary = ary.sort
+  len = sorted_ary.length
+  mid_index = len/2
+  if len.odd?
+    sorted_ary[mid_index]
+  else
+    mid_lo = sorted_ary[mid_index]
+    mid_hi = sorted_ary[mid_index+1]
+    (mid_lo + mid_hi)/2.0
+  end
 end
 ```
 
@@ -862,7 +870,7 @@ class Array
       if item.respond_to? key
         item.send key
       else
-        item[:key]
+        item[key]
       end
     end
   end
