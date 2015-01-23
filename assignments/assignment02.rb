@@ -50,8 +50,8 @@ def median(ary)
 end
 
 # Your method should generate the following results:
-mean [1, 2, 3]    #=> 2
-mean [1, 1, 4]    #=> 2
+mean [1, 2, 3]    #=> 2.0
+mean [1, 1, 4]    #=> 2.0
 
 median [1, 2, 3]  #=> 2
 median [1, 1, 4]  #=> 1
