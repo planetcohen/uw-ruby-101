@@ -97,3 +97,151 @@ palindrome?("abb")                             #=> false
 palindrome?("Able was I ere I saw elba")       #=> true
 palindrome?("A man, a plan, a canal, Panama")   #=> true
 puts "---END OF PROBLEM 3---"
+
+#----------------------------------------------------------------
+
+puts "---START OF HOMEWORK 2---"
+puts ""
+
+def to_sentence(array)
+  if array.length == 1
+    puts array
+  elsif array.length > 1
+    last_element = []
+    last_element << array.pop
+    p = array.flatten.join(", ")
+    puts p+" and "+last_element[0].to_s
+  end
+end
+
+to_sentence([])
+to_sentence(["john"])
+to_sentence(["john", "paul"])
+to_sentence([1, "paul", 3, "ringo"])
+puts "---END OF PROBLEM 1---"
+
+def mean(array)
+  sum = 0
+  array.each {|i| sum += i}
+  the_mean = sum/array.length.to_i
+  puts the_mean.to_f
+end
+
+def median(array)
+  ordered_array = array.sort
+  number_of_elements = array.length
+  if array.length % 2 != 0
+    median_pos = number_of_elements.to_i/2
+    puts ordered_array[median_pos].to_f
+  else array.length % 2 == 0
+    median1 = ordered_array[array.length.to_i/2]
+    median2 = ordered_array[array.length.to_i/2-1]
+    puts (median1.to_f+median2.to_f)/2
+  end
+end
+
+mean([1, 2, 3])
+mean([1, 1, 4])
+puts ""
+
+median([1, 2, 3])
+median([1, 1, 4])
+puts "---END OF PROBLEM 2---"
+
+def pluck(hash, target)
+  number = 0
+  if target == :name
+    number = 0
+  elsif target == :instrument
+    number = 1
+  end
+  hash.each do |i|
+    vals = i.values[number]
+    output = []
+    output<<vals
+    puts output
+  end
+end
+
+records = [{name: "John", instrument: "guitar"},
+{name: "Paul", instrument: "bass"},
+{name: "George", instrument: "guitar"},
+{name: "Ringo", instrument: "drums"}]
+
+pluck(records, :name)
+puts ""
+pluck(records, :instrument)
+puts "---END OF PROBLEM 3---"
+
+def create_transaction(date, payee, amount, type)
+  {date: date, payee: payee, amount: amount, type: type}
+end
+
+transaction_records = {}
+file_path = "/Users/hotero001/Documents/UW_ROR/assignment02-input.csv"
+File.open(file_path) do |input|
+  records = input.readlines.map do |line|
+    fields = line.split(",")
+    transaction = create_transaction(fields[0], fields[1], fields[2], fields[3])
+  end
+  transaction_records = records
+  input.close
+end
+
+def render_html(title, records)
+  <<HTML
+    <!doctype html>
+      <html>
+      #{render_head title}
+      #{render_body title, records[1..-1]} #omit first line of transaction_records, which is {date: 'date', payee: 'payee'..etc.}
+      </html>
+  HTML
+end
+
+def render_head(title)
+  <<HEAD
+    <head>
+      <title>#{title}</title>
+    </head>
+  HEAD
+end
+
+def render_body(title, records)
+  <<BODY
+    <body>
+      <h1>#{title}</h1>
+      #{render_records records}
+    </body>
+  BODY
+end
+
+def render_records(records)
+  <<RECORDS
+    <table>
+      #{render_table_header}
+      #{records.map {|r| render_record r}.join "\n"}
+    </table>
+  RECORDS
+end
+
+def render_table_header
+  <<TABLE_HEADER
+    <thead>
+      <th>DATE</th>
+      <th>Payee</th>
+      <th>Amount</th>
+      <th>Type</th>
+    </thead>
+  TABLE_HEADER
+end
+
+def render_record(r)
+  <<RECORD
+    <tr>
+      <td>#{r[:date]}</td>
+      <td>#{r[:payee]}</td>
+      <td>#{r[:amount]}</td>
+      <td>#{r[:type]}</td>
+    </tr>
+  RECORD
+end
