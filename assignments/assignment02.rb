@@ -108,7 +108,7 @@ deposits.sort_by! {|x| x[:date]}
 
 def get_totals(records)
   amounts = records.map {|r| r[:amount].to_f }
-  amounts.reduce(0) { |val, acc| val + acc }.to_f
+  amounts.reduce(0) { |val, acc| val + acc }.round(2)
 end
 
 def mean(ary)
@@ -116,16 +116,36 @@ def mean(ary)
   avg = tot.to_f/ary.length
 end
 
-def get_daily_balance(transactions)
+def get_daily_balance(transactions) 
   days = transactions.map {|t| t[:date]}.uniq
-  days.sort_by! {|d| d.split('/')[1].to_i}
-  puts days.inspect
-  transactions_by_day = days.reduce({}) do |day, acc|
-    acc[day] = transactions.select {|t| t[:date] == day}
+  days.sort_by! {|i| i.split("/")[1].to_i}
+  transactions_by_day = days.reduce({}) do |acc, day|
+    acc[day] = transactions.select { |t| t[:date] == day }
+    acc
   end
-  puts transactions_by_day
+  sum_transactions_by_day = days.reduce({}) do |acc, day|
+    amounts = transactions_by_day[day].map {|record| record[:amount]}
+    sum = amounts.reduce {|acc, amount| acc.to_f + amount.to_f }
+    acc[day] = sum.to_f 
+    acc
+  end
+  #bal = 0
+  balances = {}
+  balances_by_day = days.reduce(0) do |acc, day|
+    acc + sum_transactions_by_day[day]
+    #balances[day] = acc[day] + sum_transactions_by_day[day]
+    #balances
+  end
+  puts sum_transactions_by_day
+  puts balances_by_day
 end
+
 get_daily_balance(deposits)
+puts deposits
+
+def total_transactions_by_day()
+  
+end
 
 def render_record(rec)
 <<RECORD
@@ -179,11 +199,12 @@ total_withdrawals = get_totals(withdrawals)
 
 File.open('assignment02-out.htm', "w") do |outfile|
   outfile.puts "<HTML><BODY>"
-  outfile.puts render_body("Withdrawals", withdrawals)
-  outfile.puts render_body("Deposits", deposits)
+  outfile.puts "<h1>Summary</h1>"
   outfile.puts "<p>Total withdrawals: $#{total_withdrawals}</p>"
   outfile.puts "<p>Total deposits: $#{total_deposits}</p>"
   outfile.puts "<p>Final Balance: $#{get_ending_balance(0, total_withdrawals, total_deposits)}</p>"
+  outfile.puts render_body("Withdrawals", withdrawals)
+  outfile.puts render_body("Deposits", deposits)
   outfile.puts "</BODY></HTML>"
 end
 
