@@ -38,19 +38,17 @@ end
 # it accepts a string
 # and returns the same string with each word capitalized.
 def titleize(s)
+  # split s into an array of strings called 'words'
   words = s.split
-  caps = []
-  words.each do |word|
-    caps << word.capitalize
+  # capitalize each string as you read it out of the array 'words'
+  # into an array called 'title'
+  title = []
+  words.each do |words|
+    title << words.capitalize
   end
-  caps.join " "
+  # rejoin words in 'title' into a string
+  title.join " "
 end
-
-# Your method should generate the following results:
-titleize "hEllo WORLD"          #=> "Hello World"
-
-titleize "gooDbye CRUel wORLD"  #=> "Goodbye Cruel World"
-
 
 # ========================================================================================
 #  Problem 2 - `my_reverse`
@@ -58,21 +56,14 @@ titleize "gooDbye CRUel wORLD"  #=> "Goodbye Cruel World"
 # Write your own implementation of `reverse` called `my_reverse`
 # You may *not* use the built-in `reverse` method
 def my_reverse(s)
-  output = ""
-  letters = s.split ""
-  n = letters.length
-  while n > 0
-    n -= 1
-    output << letters[n]
+  backwards = ""
+  length = s.length
+  while length > 0
+    length = length - 1
+    backwards << s[length]
   end
-  output
+  backwards
 end
-
-# Your method should generate the following results:
-my_reverse "Hello World"          #=> "dlroW olleH"
-
-my_reverse "Goodbye Cruel World"  #=> "dlroW leurC eybdooG"
-
 
 # ========================================================================================
 #  Problem 3 - `palindrome?`
@@ -80,14 +71,8 @@ my_reverse "Goodbye Cruel World"  #=> "dlroW leurC eybdooG"
 # Write a method `palindrome?`
 # that determines whether a string is a palindrome
 def palindrome?(s)
-  stripped = s.delete(" ").delete(",").downcase
-  stripped == stripped.reverse
+  # first remove punctuation and spaces
+  inputstring = s.delete(" ").delete(",").downcase
+  # compare modified string to reversed string
+  inputstring == inputstring.reverse
 end
-
-# Your method should generate the following results:
-palindrome? "abba"                             #=> true
-palindrome? "aBbA"                             #=> true
-palindrome? "abb"                              #=> false
-
-palindrome? "Able was I ere I saw elba"        #=> true
-palindrome? "A man, a plan, a canal, Panama"   #=> true
