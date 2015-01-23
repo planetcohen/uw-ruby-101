@@ -10,8 +10,22 @@
 # creates an english string from array
 
 def to_sentence(ary)
-  # your implementation here
+  # John Smith 16Jan2015
+  word_count = ary.length
+  str_sentence = []
+
+  if word_count < 2
+    str_sentence = ary[0]
+  elsif word_count < 3
+    str_sentence = ary.insert(1, " and ").join
+  else
+    str_last_two = ary.slice!(-2).to_s << " and " << ary.slice!(-1).to_s
+    str_sentence = ary.join(", ") + ", " + str_last_two
+  end
+
+  str_sentence
 end
+
 
 # Your method should generate the following results:
 to_sentence []                       #=> ""
@@ -25,11 +39,16 @@ to_sentence [1, "paul", 3, "ringo"]  #=> "1, paul, 3 and ringo"
 
 # implement methods "mean", "median" on Array of numbers
 def mean(ary)
-  # your implementation here
+  ary.length > 0 ? ary.reduce(0) {|item, acc| acc + item + 0.0} / ary.length : 0
 end
 
 def median(ary)
   # your implementation here
+  if ary.length % 2 == 0
+    (ary.sort[(ary.length)/2] + ary.sort[(ary.length)/2-1]) / 2.0
+  else
+    ary.sort[(ary.length - 1)/2]
+  end
 end
 
 # Your method should generate the following results:
@@ -46,6 +65,11 @@ median [1, 1, 4]  #=> 1
 # implement method `pluck` on array of hashes
 def pluck(ary, key)
   # your implementation here
+  result = []
+  ary.each do |h|
+    result << h[key]
+  end
+  result
 end
 
 # Your method should generate the following results:
@@ -76,7 +100,7 @@ pluck records, :instrument  #=> ["guitar", "bass", "guitar", "drums"]
 require 'date'
 
 STARTING_BALANCE = 0.0
-INPUT_FILE_NAME = "assignment02-input-test.csv"
+INPUT_FILE_NAME = "assignment02-input.csv"
 OUTPUT_FILE_NAME = "Monthly_Statement.html"
 
 # create a hash for each transaction
