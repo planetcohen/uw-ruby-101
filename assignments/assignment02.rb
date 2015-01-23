@@ -10,7 +10,14 @@
 # creates an english string from array
 
 def to_sentence(ary)
-  # your implementation here
+  if ary.length < 1
+    return "#{ary[0]}"
+  elsif ary.length == 1
+    return "#{ary[0]} and #{ary[1]}"
+  else
+    ary.insert(ary.length-1, "and")
+    ary.join(", ")
+  end
 end
 
 # Your method should generate the following results:
@@ -25,11 +32,13 @@ to_sentence [1, "paul", 3, "ringo"]  #=> "1, paul, 3 and ringo"
 
 # implement methods "mean", "median" on Array of numbers
 def mean(ary)
-  # your implementation here
+  ary.inject(:+).to_f / ary.size
 end
 
 def median(ary)
-  # your implementation here
+  sort = ary.sort
+  length = sort.length
+  return (sort[(length - 1) / 2] + sort[length / 2]) / 2.0
 end
 
 # Your method should generate the following results:
@@ -45,7 +54,7 @@ median [1, 1, 4]  #=> 1
 
 # implement method `pluck` on array of hashes
 def pluck(ary, key)
-  # your implementation here
+  ary.map { |ary| ary[key] }
 end
 
 # Your method should generate the following results:
@@ -73,3 +82,11 @@ pluck records, :instrument  #=> ["guitar", "bass", "guitar", "drums"]
 # - daily balance
 # - summary:
 #   - starting balance, total deposits, total withdrawals, ending balance
+
+def create_transaction(date, payee, amount, type)
+  {date: date, payee: payee, amount: amount, type: type}
+end
+
+File.open("banktransactionsinput.csv") do |input|
++  ary = input.readlines
++  header = ary.shift
