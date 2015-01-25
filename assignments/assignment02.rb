@@ -129,19 +129,35 @@ def get_daily_balance(transactions)
     acc[day] = sum.to_f 
     acc
   end
-  #bal = 0
-  balances = {}
-  balances_by_day = days.reduce(0) do |acc, day|
-    acc + sum_transactions_by_day[day]
-    #balances[day] = acc[day] + sum_transactions_by_day[day]
-    #balances
+  bal = 0
+  balances_by_day = days.reduce({}) do |acc, day|
+    acc[day] = bal + sum_transactions_by_day[day]
+    bal = acc[day]
+    acc
   end
-  puts sum_transactions_by_day
-  puts balances_by_day
+  #puts sum_transactions_by_day
+  balances_by_day
 end
 
-get_daily_balance(deposits)
-puts deposits
+get_daily_balance(nt)
+
+def get_summable_transactions(transactions)
+  trans_vals = transactions.reject {|t| t[:date] == "date"}
+  out_trans = []
+  out_trans = trans_vals.map do |t|
+    if t[:type] == "withdrawal" then
+      t[:amount] = t[:amount].to_f * -1.0
+    else
+      t[:amount] = t[:amount].to_f 
+    end
+    t
+  end
+  # puts out_trans
+end
+
+#nt = get_summable_transactions(transactions)
+puts nt
+get_daily_balance(nt)
 
 def total_transactions_by_day()
   
@@ -186,8 +202,23 @@ def render_body(title, records)
 BODY
 end
 
-def render_totals(transactions)
-  
+def render_balance_record(record)
+<<RECORD
+<tr>
+  <td>#{rec[:date]}</td>
+  <td>#{rec[:bal]}</td>
+</tr>
+RECORD
+end
+
+def render_daily_balances(transactions)
+  nt = get_summable_transactions(transactions)
+  db = get_daily_balance(nt)
+  <<BALANCES
+  <table><tr><th>Date</th><th>Ending Balance</th></tr>
+    #{db.map {|rec| render_balance_record(rec)}.join "\n"}
+  </table>
+  BALANCES
 end
 
 def get_ending_balance(beginning_balance, tot_withdrawals, tot_deposits)
