@@ -130,16 +130,17 @@ def get_daily_balance(transactions)
     acc
   end
   bal = 0
-  balances_by_day = days.reduce({}) do |acc, day|
-    acc[day] = bal + sum_transactions_by_day[day]
-    bal = acc[day]
+  balances_by_day = days.reduce([]) do |acc, day|
+    h = {}
+    h[:date] = day
+    h[:balance] = bal + sum_transactions_by_day[day]
+    acc << h
     acc
   end
-  #puts sum_transactions_by_day
   balances_by_day
 end
 
-get_daily_balance(nt)
+#balances = get_daily_balance(nt)
 
 def get_summable_transactions(transactions)
   trans_vals = transactions.reject {|t| t[:date] == "date"}
@@ -205,21 +206,24 @@ end
 def render_balance_record(record)
 <<RECORD
 <tr>
-  <td>#{rec[:date]}</td>
-  <td>#{rec[:bal]}</td>
+  <td>#{record[:date]}</td>
+  <td>#{record[:balance]}</td>
 </tr>
 RECORD
 end
 
+
 def render_daily_balances(transactions)
-  nt = get_summable_transactions(transactions)
-  db = get_daily_balance(nt)
-  <<BALANCES
+nt = get_summable_transactions(transactions)
+db = get_daily_balance(nt)
+puts db.class
+<<BALANCES
   <table><tr><th>Date</th><th>Ending Balance</th></tr>
-    #{db.map {|rec| render_balance_record(rec)}.join "\n"}
+  #{db.map {|rec| render_balance_record(rec)}.join "\n"}
   </table>
-  BALANCES
+BALANCES
 end
+
 
 def get_ending_balance(beginning_balance, tot_withdrawals, tot_deposits)
   beginning_balance.to_f - tot_withdrawals.to_f + tot_deposits.to_f
@@ -234,6 +238,7 @@ File.open('assignment02-out.htm', "w") do |outfile|
   outfile.puts "<p>Total withdrawals: $#{total_withdrawals}</p>"
   outfile.puts "<p>Total deposits: $#{total_deposits}</p>"
   outfile.puts "<p>Final Balance: $#{get_ending_balance(0, total_withdrawals, total_deposits)}</p>"
+  outfile.puts render_daily_balances(transactions)
   outfile.puts render_body("Withdrawals", withdrawals)
   outfile.puts render_body("Deposits", deposits)
   outfile.puts "</BODY></HTML>"
