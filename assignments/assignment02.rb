@@ -55,12 +55,8 @@ median [1, 1, 4]  #=> 1
 
 # implement method `pluck` on array of hashes
 def pluck(ary, key)
-  # your implementation here
-  out_array = []
-  ary.each do |h|
-    out_array << h[key]
-  end
-  out_array
+
+  ary.map {|item| item[key]}
 end
 
 # Your method should generate the following results:
