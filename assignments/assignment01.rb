@@ -38,12 +38,17 @@ end
 # it accepts a string
 # and returns the same string with each word capitalized.
 def titleize(s)
+<<<<<<< HEAD
   words = s.split
   caps = []
   words.each do |word|
     caps << word.capitalize
   end
   caps.join " "
+=======
+  string = s.split(" ").map(&:capitalize).join(" ") 
+  puts string
+>>>>>>> 4d8c5e17aeeaa3f02b03d7ced1497e0eb3fe09fb
 end
 
 # Your method should generate the following results:
@@ -58,6 +63,7 @@ titleize "gooDbye CRUel wORLD"  #=> "Goodbye Cruel World"
 # Write your own implementation of `reverse` called `my_reverse`
 # You may *not* use the built-in `reverse` method
 def my_reverse(s)
+<<<<<<< HEAD
   output = ""
   letters = s.split ""
   n = letters.length
@@ -66,6 +72,16 @@ def my_reverse(s)
     output << letters[n]
   end
   output
+=======
+  string = s.split("")
+  loop = string.length
+  output =""
+  while loop > 0
+    loop -= 1
+    output +=string[loop]
+  end
+ return output
+>>>>>>> 4d8c5e17aeeaa3f02b03d7ced1497e0eb3fe09fb
 end
 
 # Your method should generate the following results:
@@ -80,8 +96,18 @@ my_reverse "Goodbye Cruel World"  #=> "dlroW leurC eybdooG"
 # Write a method `palindrome?`
 # that determines whether a string is a palindrome
 def palindrome?(s)
+<<<<<<< HEAD
   stripped = s.delete(" ").delete(",").downcase
   stripped == stripped.reverse
+=======
+  forward = s.downcase.delete(" ").delete(",")
+  backward = s.downcase.reverse.delete(" ").delete(",")
+    if forward == backward
+        puts true
+    elsif forward != backward
+        puts false
+    end
+>>>>>>> 4d8c5e17aeeaa3f02b03d7ced1497e0eb3fe09fb
 end
 
 # Your method should generate the following results:
