@@ -9,8 +9,23 @@
 
 # creates an english string from array
 
-def to_sentence(ary)
-  # your implementation here
+def to_sentence(input)
+  count = input.count
+    if count > 2
+            last = input.pop
+            input.each do |word|
+            print "#{word}, "
+            end
+            print "and #{last}"
+    elsif count == 2
+            last = input.pop
+            input.each do |word|
+            print "#{word} "
+            end
+            print "and #{last}"
+    else
+        return input.shift
+    end
 end
 
 # Your method should generate the following results:
@@ -25,11 +40,26 @@ to_sentence [1, "paul", 3, "ringo"]  #=> "1, paul, 3 and ringo"
 
 # implement methods "mean", "median" on Array of numbers
 def mean(ary)
-  # your implementation here
+  count = ary.count
+  total = 0
+  ary.each do |num|
+      total = num + total
+  end
+  mean = total / count
+  return mean
 end
 
 def median(ary)
-  # your implementation here
+  count = ary.count
+  total = 0
+  if !(count.even?)
+      middle = (count - 1)/2
+      return ary[middle]
+  else
+      right = (count/2)
+      left = (count/2)-1
+      return (ary[left] + ary[right])/2.to_f
+  end
 end
 
 # Your method should generate the following results:
@@ -45,7 +75,9 @@ median [1, 1, 4]  #=> 1
 
 # implement method `pluck` on array of hashes
 def pluck(ary, key)
-  # your implementation here
+  ary.map do |input_hash| 
+        input_hash[key]
+    end
 end
 
 # Your method should generate the following results:
@@ -73,3 +105,8 @@ pluck records, :instrument  #=> ["guitar", "bass", "guitar", "drums"]
 # - daily balance
 # - summary:
 #   - starting balance, total deposits, total withdrawals, ending balance
+
+File.open("assignment02-input.csv", "r") do |input|
+        records = input.readlines.map do |line|
+            fields = line.split ","
+        end
