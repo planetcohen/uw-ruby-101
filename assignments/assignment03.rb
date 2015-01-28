@@ -99,26 +99,46 @@ class Transaction
   def initialize(date, payee, amount, type)
     @date = date
     @payee = payee
-    @amount = amount
+    @amount = amount.to_f
     @type = type  
   end
-  def height; @height; end
+  def date; @date; end
   def payee; @payee; end
   def amount; @amount; end
   def type; @type; end
-end
-
-def create_transaction_hash( date, payee, amount, type )
-  { date: date, payee: payee, amount: amount, type: type }
-end
-
-records = []
-transactions = File.open('assignment02-input.csv', "r") do |infile|
-  records = infile.readlines.map do |inline|
-    f = inline.chomp.split(",")
-    create_transaction_hash(f[0], f[1], f[2], f[3])
+  def amountval
+    if @type == 'withdrawal'
+      @amount * -0.1
+    else
+      @amount
+    end
   end
 end
+
+class BankAccount
+  attr_reader :ledger
+  def initialize()
+    @ledger = []
+  end
+  def add_transaction(transaction)
+    @ledger.push transaction
+  end
+  def import_transactions(filename)
+    transactions = File.open(filename, "r") do |infile|
+      records = infile.readlines.map do |inline|
+        f = inline.chomp.split(",")
+        t = Transaction.new(f[0], f[1], f[2], f[3])
+        self.add_transaction(t)
+      end
+    end
+  end
+end
+
+ba = BankAccount.new()
+ba.import_transactions('assignment02-input.csv')
+ba.ledger.each {|t| puts t.type}
+a = ba.ledger.each {|t| puts t.amountval}
+
 
 withdrawals = transactions.select {|h| h[:type] == 'withdrawal' }
 withdrawals.sort_by! {|x| x[:date]}
