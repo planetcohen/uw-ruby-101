@@ -1,3 +1,7 @@
+h1, h2, th, td {
+    font-family: Helvetica
+}
+
 .date {
     width: 30%;
     text-align: left;
