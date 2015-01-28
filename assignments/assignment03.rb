@@ -94,3 +94,168 @@ end
 # - WithdrawalTransaction
 
 # use blocks for your HTML rendering code
+
+class Transaction
+  def initialize(date, payee, amount, type)
+    @date = date
+    @payee = payee
+    @amount = amount
+    @type = type  
+  end
+  def height; @height; end
+  def payee; @payee; end
+  def amount; @amount; end
+  def type; @type; end
+end
+
+def create_transaction_hash( date, payee, amount, type )
+  { date: date, payee: payee, amount: amount, type: type }
+end
+
+records = []
+transactions = File.open('assignment02-input.csv', "r") do |infile|
+  records = infile.readlines.map do |inline|
+    f = inline.chomp.split(",")
+    create_transaction_hash(f[0], f[1], f[2], f[3])
+  end
+end
+
+withdrawals = transactions.select {|h| h[:type] == 'withdrawal' }
+withdrawals.sort_by! {|x| x[:date]}
+deposits = transactions.select {|h| h[:type] == 'deposit' }
+deposits.sort_by! {|x| x[:date]}
+
+def get_totals(records)
+  amounts = records.map {|r| r[:amount].to_f }
+  amounts.reduce(0) { |val, acc| val + acc }.round(2)
+end
+
+def mean(ary)
+  tot = ary.reduce {|i, acc| i + acc }
+  avg = tot.to_f/ary.length
+end
+
+def get_daily_balance(transactions) 
+  days = transactions.map {|t| t[:date]}.uniq
+  days.sort_by! {|i| i.split("/")[1].to_i}
+  transactions_by_day = days.reduce({}) do |acc, day|
+    acc[day] = transactions.select { |t| t[:date] == day }
+    acc
+  end
+  sum_transactions_by_day = days.reduce({}) do |acc, day|
+    amounts = transactions_by_day[day].map {|record| record[:amount]}
+    sum = amounts.reduce {|acc, amount| acc.to_f + amount.to_f }
+    acc[day] = sum.to_f 
+    acc
+  end
+  bal = 0
+  balances_by_day = days.reduce([]) do |acc, day|
+    h = {}
+    h[:date] = day
+    h[:balance] = bal + sum_transactions_by_day[day]
+    acc << h
+    acc
+  end
+  balances_by_day
+end
+
+#balances = get_daily_balance(nt)
+
+def get_summable_transactions(transactions)
+  trans_vals = transactions.reject {|t| t[:date] == "date"}
+  out_trans = []
+  out_trans = trans_vals.map do |t|
+    if t[:type] == "withdrawal" then
+      t[:amount] = t[:amount].to_f * -1.0
+    else
+      t[:amount] = t[:amount].to_f 
+    end
+    t
+  end
+  # puts out_trans
+end
+
+#nt = get_summable_transactions(transactions)
+puts nt
+get_daily_balance(nt)
+
+
+def render_record(rec)
+<<RECORD
+<tr>
+  <td>#{rec[:date]}</td>
+  <td>#{rec[:payee]}</td>
+  <td>$#{rec[:amount]}</td>
+<tr>
+RECORD
+end
+
+def render_table_header()
+<<HEADER
+<tr>
+  <th>Date</th>
+  <th>Payee</th>
+  <th>Amount</th>
+<tr>
+HEADER
+end
+
+def render_header(record) 
+end
+
+def render_records(records)
+<<RECORDS
+<table style="width:30%">
+  #{render_table_header}
+  #{records.map {|r| render_record(r)}.join "\n"}
+</table>
+RECORDS
+end
+
+def render_body(title, records)
+<<BODY
+    <h1>#{title}</h1>
+    #{render_records(records)}
+BODY
+end
+
+def render_balance_record(record)
+<<RECORD
+<tr>
+  <td>#{record[:date]}</td>
+  <td>#{record[:balance]}</td>
+</tr>
+RECORD
+end
+
+
+def render_daily_balances(transactions)
+nt = get_summable_transactions(transactions)
+db = get_daily_balance(nt)
+puts db.class
+<<BALANCES
+  <table><tr><th>Date</th><th>Ending Balance</th></tr>
+  #{db.map {|rec| render_balance_record(rec)}.join "\n"}
+  </table>
+BALANCES
+end
+
+
+def get_ending_balance(beginning_balance, tot_withdrawals, tot_deposits)
+  beginning_balance.to_f - tot_withdrawals.to_f + tot_deposits.to_f
+end
+
+total_deposits = get_totals(deposits)
+total_withdrawals = get_totals(withdrawals)
+
+File.open('assignment02-out.htm', "w") do |outfile|
+  outfile.puts "<HTML><BODY>"
+  outfile.puts "<h1>Summary</h1>"
+  outfile.puts "<p>Total withdrawals: $#{total_withdrawals}</p>"
+  outfile.puts "<p>Total deposits: $#{total_deposits}</p>"
+  outfile.puts "<p>Final Balance: $#{get_ending_balance(0, total_withdrawals, total_deposits)}</p>"
+  outfile.puts render_daily_balances(transactions)
+  outfile.puts render_body("Withdrawals", withdrawals)
+  outfile.puts render_body("Deposits", deposits)
+  outfile.puts "</BODY></HTML>"
+end
