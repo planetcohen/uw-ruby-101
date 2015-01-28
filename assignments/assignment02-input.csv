@@ -1,1 +1,53 @@
-date,payee,amount,type12/1/2014,Walgreens,21.92,withdrawal12/18/2014,check #5129,125.00,withdrawal12/16/2014,check #5127,50.00,withdrawal12/7/2014,Safeway,23.89,withdrawal12/31/2014,Starbucks,8.45,withdrawal12/30/2014,ATM,100.00,withdrawal12/4/2014,Univ Washington,1500.00,deposit12/4/2014,Starbucks,5.30,withdrawal12/4/2014,Subway,7.80,withdrawal12/5/2014,Nike Town,85.00,withdrawal12/6/2014,Starbucks,5.30,withdrawal12/6/2014,ATM,50.00,deposit12/8/2014,Starbucks,5.30,withdrawal12/11/2014,Safeway,42.15,withdrawal12/9/2014,Bartell's,7.83,withdrawal12/9/2014,check #5128,575.00,withdrawal12/15/2014,Starbucks,5.30,withdrawal12/22/2014,check #5130,120.00,withdrawal12/15/2014,ATM,50.00,deposit12/11/2014,Home Depot,17.89,withdrawal12/18/2014,Starbucks,5.30,withdrawal12/27/2014,Walgreens,14.56,withdrawal12/30/2014,Safeway,35.17,withdrawal12/23/2014,Starbucks,5.30,withdrawal12/18/2014,Starbucks,5.30,withdrawal12/31/2014,check #5131,20.00,withdrawal12/7/2014,check #5132,75.00,withdrawal12/14/2014,check #5133,17.50,withdrawal12/13/2014,check #5134,45.68,withdrawal12/14/2014,Office Depot,24.85,withdrawal12/17/2014,Apple,110.62,withdrawal12/6/2014,ATM,500.00,deposit12/26/2014,check #5135,62.50,withdrawal12/28/2014,check #5136,62.50,withdrawal12/27/2014,Starbucks,5.30,withdrawal12/12/2014,ATM,60.00,withdrawal12/13/2014,QFC,13.25,withdrawal12/13/2014,check #5126,25.00,withdrawal12/19/2014,Chipotle,10.42,withdrawal12/18/2014,Bartell's,14.82,withdrawal12/22/2014,Safeway,28.45,withdrawal12/21/2014,ATM,20.00,deposit12/22/2014,QFC,48.13,withdrawal12/22/2014,Shell,52.00,withdrawal12/5/2014,ATM,60.00,withdrawal12/7/2014,Arco,42.00,withdrawal12/17/2014,Univ Washington,1500.00,deposit12/14/2014,Chipotle,10.42,withdrawal12/15/2014,ATM,60.00,withdrawal12/16/2014,7-Eleven,5.26,withdrawal12/16/2014,Arco,48.01,withdrawal12/29/2014,Starbucks,5.30,withdrawal
+date,payee,amount,type
+12/1/2014,Walgreens,21.92,withdrawal
+12/18/2014,check #5129,125.00,withdrawal
+12/16/2014,check #5127,50.00,withdrawal
+12/7/2014,Safeway,23.89,withdrawal
+12/31/2014,Starbucks,8.45,withdrawal
+12/30/2014,ATM,100.00,withdrawal
+12/4/2014,Univ Washington,1500.00,deposit
+12/4/2014,Starbucks,5.30,withdrawal
+12/4/2014,Subway,7.80,withdrawal
+12/5/2014,Nike Town,85.00,withdrawal
+12/6/2014,Starbucks,5.30,withdrawal
+12/6/2014,ATM,50.00,deposit
+12/8/2014,Starbucks,5.30,withdrawal
+12/11/2014,Safeway,42.15,withdrawal
+12/9/2014,Bartell's,7.83,withdrawal
+12/9/2014,check #5128,575.00,withdrawal
+12/15/2014,Starbucks,5.30,withdrawal
+12/22/2014,check #5130,120.00,withdrawal
+12/15/2014,ATM,50.00,deposit
+12/11/2014,Home Depot,17.89,withdrawal
+12/18/2014,Starbucks,5.30,withdrawal
+12/27/2014,Walgreens,14.56,withdrawal
+12/30/2014,Safeway,35.17,withdrawal
+12/23/2014,Starbucks,5.30,withdrawal
+12/18/2014,Starbucks,5.30,withdrawal
+12/31/2014,check #5131,20.00,withdrawal
+12/7/2014,check #5132,75.00,withdrawal
+12/14/2014,check #5133,17.50,withdrawal
+12/13/2014,check #5134,45.68,withdrawal
+12/14/2014,Office Depot,24.85,withdrawal
+12/17/2014,Apple,110.62,withdrawal
+12/6/2014,ATM,500.00,deposit
+12/26/2014,check #5135,62.50,withdrawal
+12/28/2014,check #5136,62.50,withdrawal
+12/27/2014,Starbucks,5.30,withdrawal
+12/12/2014,ATM,60.00,withdrawal
+12/13/2014,QFC,13.25,withdrawal
+12/13/2014,check #5126,25.00,withdrawal
+12/19/2014,Chipotle,10.42,withdrawal
+12/18/2014,Bartell's,14.82,withdrawal
+12/22/2014,Safeway,28.45,withdrawal
+12/21/2014,ATM,20.00,deposit
+12/22/2014,QFC,48.13,withdrawal
+12/22/2014,Shell,52.00,withdrawal
+12/5/2014,ATM,60.00,withdrawal
+12/7/2014,Arco,42.00,withdrawal
+12/17/2014,Univ Washington,1500.00,deposit
+12/14/2014,Chipotle,10.42,withdrawal
+12/15/2014,ATM,60.00,withdrawal
+12/16/2014,7-Eleven,5.26,withdrawal
+12/16/2014,Arco,48.01,withdrawal
+12/29/2014,Starbucks,5.30,withdrawal
