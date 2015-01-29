@@ -155,12 +155,6 @@ ba.import_transactions('assignment02-input.csv')
 ba.each {|t| t.puts}
 puts ba.each {|t| puts t.amountval}
 
-a = []
-a[0]= WithdrawalTransaction.new('15/1/2008', 'me', 100)
-a[1] = DepositTransaction.new('15/1/2008', 'me', 100)
-puts a
-
-
 withdrawals = transactions.select {|h| h[:type] == 'withdrawal' }
 withdrawals.sort_by! {|x| x[:date]}
 deposits = transactions.select {|h| h[:type] == 'deposit' }
@@ -177,7 +171,7 @@ def mean(ary)
 end
 
 def get_daily_balance(transactions) 
-  days = transactions.map {|t| t[:date]}.uniq
+  days = transactions.map {|t| t.date}.uniq
   days.sort_by! {|i| i.split("/")[1].to_i}
   transactions_by_day = days.reduce({}) do |acc, day|
     acc[day] = transactions.select { |t| t[:date] == day }
