@@ -106,29 +106,45 @@ class Transaction
   def payee; @payee; end
   def amount; @amount; end
   def type; @type; end
-  def amountval
-    if @type == 'withdrawal'
-      @amount * -0.1
-    else
-      @amount
-    end
+  def puts
+    if @type == "Deposit"
+      print "date: #{date}, payee: #{payee}, amount: #{amount} \n" 
+    elsif @type == "Withdrawal"
+      print "date: #{date}, payee: #{payee}, amount: #{amount} \n"
+    else print "\n"
+    end 
   end
 end
 
-class BankAccount
-  attr_reader :ledger
+class DepositTransaction < Transaction
+ def initialize(date, payee, amount)
+  super date, payee, amount.to_f, "Deposit"
+ end
+end
+
+class WithdrawalTransaction < Transaction
+ def initialize(date, payee, amount)
+  super date, payee, amount.to_f * -1.0, "Withdrawal"
+ end
+end
+
+class BankAccount < Array
   def initialize()
-    @ledger = []
   end
   def add_transaction(transaction)
-    @ledger.push transaction
+    self.push transaction
   end
   def import_transactions(filename)
     transactions = File.open(filename, "r") do |infile|
       records = infile.readlines.map do |inline|
         f = inline.chomp.split(",")
-        t = Transaction.new(f[0], f[1], f[2], f[3])
-        self.add_transaction(t)
+        if  f[3] == "deposit" then
+          t = DepositTransaction.new(f[0], f[1], f[2])
+          self.add_transaction t
+        elsif f[3] == "withdrawal" then
+          t = WithdrawalTransaction.new(f[0], f[1], f[2])
+          self.add_transaction t
+        end
       end
     end
   end
@@ -136,8 +152,13 @@ end
 
 ba = BankAccount.new()
 ba.import_transactions('assignment02-input.csv')
-ba.ledger.each {|t| puts t.type}
-a = ba.ledger.each {|t| puts t.amountval}
+ba.each {|t| t.puts}
+puts ba.each {|t| puts t.amountval}
+
+a = []
+a[0]= WithdrawalTransaction.new('15/1/2008', 'me', 100)
+a[1] = DepositTransaction.new('15/1/2008', 'me', 100)
+puts a
 
 
 withdrawals = transactions.select {|h| h[:type] == 'withdrawal' }
