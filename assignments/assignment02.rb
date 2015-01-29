@@ -10,20 +10,14 @@
 # creates an english string from array
 
 def to_sentence(ary)
-  # John Smith 16Jan2015
-  word_count = ary.length
-  str_sentence = []
-
-  if word_count < 2
-    str_sentence = ary[0]
-  elsif word_count < 3
-    str_sentence = ary.insert(1, " and ").join
+  if ary.length == 0
+    []
+  elsif ary.length == 1
+    ary[0]
   else
-    str_last_two = ary.slice!(-2).to_s << " and " << ary.slice!(-1).to_s
-    str_sentence = ary.join(", ") + ", " + str_last_two
+    last = ary.pop
+    "#{ary.join(", ")} and #{last}"
   end
-
-  str_sentence
 end
 
 
@@ -39,15 +33,20 @@ to_sentence [1, "paul", 3, "ringo"]  #=> "1, paul, 3 and ringo"
 
 # implement methods "mean", "median" on Array of numbers
 def mean(ary)
-  ary.length > 0 ? ary.reduce(0) {|item, acc| acc + item + 0.0} / ary.length : 0
+  sum = ary.reduce(0) {|x, acc| acc + x}
+  sum.to_f / ary.length
 end
 
 def median(ary)
-  # your implementation here
-  if ary.length % 2 == 0
-    (ary.sort[(ary.length)/2] + ary.sort[(ary.length)/2-1]) / 2.0
+  sorted_ary = ary.sort
+  len = sorted_ary.length
+  mid_index = len/2
+  if len.odd?
+    sorted_ary[mid_index]
   else
-    ary.sort[(ary.length - 1)/2]
+    mid_lo = sorted_ary[mid_index]
+    mid_hi = sorted_ary[mid_index+1]
+    (mid_lo + mid_hi)/2.0
   end
 end
 
@@ -64,12 +63,7 @@ median [1, 1, 4]  #=> 1
 
 # implement method `pluck` on array of hashes
 def pluck(ary, key)
-  # your implementation here
-  result = []
-  ary.each do |h|
-    result << h[key]
-  end
-  result
+  ary.map {|item| item[key]}
 end
 
 # Your method should generate the following results:
@@ -97,185 +91,192 @@ pluck records, :instrument  #=> ["guitar", "bass", "guitar", "drums"]
 # - daily balance
 # - summary:
 #   - starting balance, total deposits, total withdrawals, ending balance
-require 'date'
-
-STARTING_BALANCE = 0.0
-INPUT_FILE_NAME = "assignment02-input.csv"
-OUTPUT_FILE_NAME = "Monthly_Statement.html"
-
-# create a hash for each transaction
-def create_transaction(trans_date, payee, amount, trans_type)
-  {trans_date: Date.strptime(trans_date, "%m/%d/%Y"), payee: payee, amount: amount.to_f, trans_type: trans_type.delete("\n")}
-end
-
-# read contents of file into array
-def load_transaction_file(file_name)
-  arr_transactions = []
-  File.open(file_name, "r") do |input|
-    input.readline
-    records = input.readlines.map do |line|
-      fields = line.split ","
-      some_transaction = create_transaction fields[0], fields[1], fields[2].to_f, fields[3]
-      arr_transactions << some_transaction
+def bank_statement
+  def format_currency(amount)
+    prefix = if amount < 0
+      amount = -amount
+      "-"
     end
-    input.close
+    s = amount.to_s
+    if amount < 10
+      cents = "0#{s}"
+      dollars = "0"
+    elsif amount < 100
+      cents = s
+      dollars = "0"
+    else
+      cents = s[-2, 2]
+      dollars = s[0, s.length-2]
+      if dollars.length > 3
+        lower = dollars[-3, 3]
+        upper = dollars[0, dollars.length-3]
+        dollars = "#{upper},#{lower}"
+      end
+    end
+    "$ #{prefix}#{dollars}.#{cents}"
   end
-  arr_transactions
-end
-
-# get all transactions of given type
-def get_trans_of_type(arr_transactions, str_trans_type)
-  arr_transactions.select {|transaction| transaction[:trans_type] == str_trans_type}
-end
-
-# get all transactions of given date
-def get_trans_on_date(arr_transactions, date)
-  arr_transactions.select {|transaction| transaction[:trans_date] == date}
-end
-
-# get all unique dates
-def get_dates(arr_transactions)
-  arr_dates = []
-  arr_transactions.each do |transaction|
-    arr_dates << transaction[:trans_date]
+  
+  def format_date(date)
+    month_string = date[:month] < 10 ? "0#{date[:month]}" : date[:month].to_s
+    day_string   = date[:day] < 10 ? "0#{date[:day]}" : date[:day].to_s
+    "#{month_string}/#{day_string}/#{date[:year]}"
   end
-  arr_dates.uniq
-end
-
-# get sum of amounts
-def get_sum_amount(arr_transactions)
-  arr_transactions.reduce(0) {|flt_sum, transaction| flt_sum + transaction[:amount]}
-end
-
-# get balance for a given date and starting balance
-def get_balance_date(arr_transactions, date, balance)
-  x = get_trans_on_date(arr_transactions, date)
-  sum_deposits = get_sum_amount(get_trans_of_type(x, "deposit"))
-  sum_withdrawals = get_sum_amount(get_trans_of_type(x, "withdrawal"))
-  balance + sum_deposits - sum_withdrawals
-end
-
-# create a hash for date balance
-def create_daily_balance(trans_date, amount)
-  {trans_date: trans_date, amount: amount}
-end
-
-# calculation
-
-flt_starting_balance = STARTING_BALANCE
-x = load_transaction_file(INPUT_FILE_NAME)
-arr_transactions = x.sort {|x,y| x[:trans_date] <=> y[:trans_date]}
-
-arr_all_withdrawals = get_trans_of_type(arr_transactions, "withdrawal")
-flt_total_withdrawals = get_sum_amount(arr_all_withdrawals)
-
-arr_all_deposits = get_trans_of_type(arr_transactions, "deposit")
-flt_total_deposits = get_sum_amount(arr_all_deposits)
-
-arr_daily_balance = []
-current_balance = flt_starting_balance
-get_dates(arr_transactions).each do |date|
-  current_balance = get_balance_date(arr_transactions, date, current_balance)
-  arr_daily_balance << create_daily_balance(date, current_balance)
-end
-
-flt_ending_balance = flt_starting_balance + flt_total_deposits - flt_total_withdrawals
-
-# presentation
-
-def save_statement_output(str_output, output_file_name)
-  File.open(output_file_name, "w+") do |output|
-    output.print str_output
-    output.close
+  
+  def render_html(statement)
+    <<-HTML
+      <html>
+        <head>
+          <title>Bank Statement</title>
+          <style>
+          h1,h2,th,td {font-family: Helvetica}
+          th,td {padding:4px 16px}
+          th {text-align:left}
+          td {text-align:right}
+          </style>
+        </head>
+        #{render_body statement}
+      </html>
+    HTML
   end
+  
+  def render_body(statement)
+    <<-BODY
+      <body>
+        <h1>Bank Statement</h1>
+        #{render_summary statement[:summary]}
+        #{render_txs statement[:withdrawals], "Withdrawals"}
+        #{render_txs statement[:deposits], "Deposits"}
+        #{render_daily_balances statement[:dates], statement[:daily_balances]}
+      </body>
+    BODY
+  end
+  
+  def render_summary(summary)
+    <<-SUMMARY
+      <h2>Summary</h2>
+      <table>
+        <tr><th>Starting Balance</th> <td>#{format_currency summary[:starting_balance]}</td></tr>
+        <tr><th>Total Deposits</th>   <td>#{format_currency summary[:sum_deposits]}</td></tr>
+        <tr><th>Total Withdrawals</th><td>#{format_currency summary[:sum_withdrawals]}</td></tr>
+        <tr><th>Ending Balance</th>   <td>#{format_currency summary[:ending_balance]}</td></tr>
+      </table>
+    SUMMARY
+  end
+  
+  def render_tx(tx)
+    <<-TX
+      <tr>
+        <th>#{tx[:formatted_date]}</th>
+        <th>#{tx[:payee]}</th>
+        <td>#{format_currency tx[:amount]}</td>
+      </tr>
+    TX
+  end
+  
+  def render_txs(txs, label)
+    <<-TXS
+      <h2>#{label}</h2>
+      <table>
+        #{txs.map {|tx| render_tx tx}.join "\n"}
+      </table>
+    TXS
+  end
+  
+  def render_daily_balance(date, balance)
+    <<-TXS
+      <tr>
+        <th>#{date}</th>
+        <td>#{format_currency balance[:summary][:ending_balance]}</td>
+      </tr>
+    TXS
+  end
+  
+  def render_daily_balances(dates, balances)
+    <<-BALANCES
+      <h2>Daily Balances</h2>
+      <table>
+        #{dates.map {|date| render_daily_balance date, balances[date]}.join "\n"}
+      </table>
+    BALANCES
+  end
+  
+  def read_txs
+    File.open("assignment02-input.csv") do |file|
+      lines = file.readlines
+
+      keys = lines.shift.chomp.split(",").map {|key| key.to_sym}
+
+      lines.map do |line|
+        tx = {}
+        line.chomp.split(",").each_with_index do |field, index|
+          key = keys[index]
+          tx[key] = field
+        end
+        tx
+      end.map do |tx|
+        tx[:amount] = (tx[:amount].to_f * 100).to_i
+        month, day, year = tx[:date].split "/"
+        date = {year: year.to_i, month: month.to_i, day: day.to_i}
+        tx[:date] = date
+        tx[:formatted_date] = format_date date
+        tx
+      end.sort {|a,b| a[:formatted_date] <=> b[:formatted_date]}
+    end
+  end
+  
+  def txs_totals(txs, starting_balance)
+    withdrawals = txs.select {|tx| tx[:type] == "withdrawal"}.sort {|a,b| a[:formatted_date] <=> b[:formatted_date]}
+    sum_withdrawals = withdrawals.reduce(0) {|acc, tx| puts "tx => #{tx}, acc => #{acc}"; acc += tx[:amount]}
+
+    deposits = txs.select {|tx| tx[:type] == "deposit"}.sort {|a,b| a[:formatted_date] <=> b[:formatted_date]}
+    sum_deposits = deposits.reduce(0) {|acc, tx| puts "tx => #{tx}, acc => #{acc}"; acc += tx[:amount]}
+
+    ending_balance = starting_balance + sum_deposits - sum_withdrawals
+    
+    {
+      summary: {
+        starting_balance: starting_balance,
+        sum_deposits: sum_deposits,
+        sum_withdrawals: sum_withdrawals,
+        ending_balance: ending_balance
+      },
+      withdrawals: withdrawals,
+      deposits: deposits
+    }
+  end
+  
+  def calc_statement(txs)
+    statement = txs_totals txs, 0
+
+    dates = txs.map {|tx| tx[:formatted_date]}.uniq.sort
+
+    daily_balances = {}
+    dates.each_with_index do |date, index|
+      txs_for_date = txs.select {|tx| tx[:formatted_date] == date}
+      starting_balance = if index == 0
+        # first day, so use starting balance:
+        statement[:summary][:starting_balance]
+      else
+        # use ending balance of previous date:
+        prev_date = dates[index-1]
+        daily_balances[prev_date][:summary][:ending_balance]
+      end
+      daily_balances[date] = txs_totals txs_for_date, starting_balance
+    end
+    statement[:dates] = dates
+    statement[:daily_balances] = daily_balances
+    statement
+  end
+  
+  def write_html(html)
+    File.open("assignment02-output.html", "w") do |file|
+      file.write html
+    end
+  end
+  
+  txs = read_txs
+  statement = calc_statement txs
+  html = render_html statement
+  write_html html
+  nil
 end
-
-def render_transaction(t)
-  <<RECORD
-    <tr>
-      <td>#{t[:trans_date]}</td>
-      <td>#{t[:payee]}</td>
-      <td>$#{(t[:amount] * 100).round/100.0}</td>
-      <td>#{t[:trans_type]}</td>
-    </tr>
-RECORD
-end
-
-def render_transactions(arr_transactions)
-  <<TRANSACTIONS
-    <table>
-      <tr><td>Date:</td><td>Payee:</td><td>Amount:</td><td>Type:</td></tr>
-      #{arr_transactions.map {|r| render_transaction r}.join "\n"}
-    </table>
-TRANSACTIONS
-end
-
-def render_daily_balance(b)
-  <<BALANCE
-      <tr><td>#{b[:trans_date]}</td><td>$#{(b[:amount] * 100).round/100.0}</td></tr>
-BALANCE
-end
-
-def render_daily_balances(arr_daily_balance)
-  <<BALANCES
-    <table>
-      <tr><td>Date:</td><td>Amount:</td></tr>
-      #{arr_daily_balance.map {|r| render_daily_balance r}.join "\n"}
-    </table>
-BALANCES
-end
-
-def render_summary_transaction(str_title, flt_amount)
-  <<TRANSACTION
-    <tr><td>#{str_title}</td><td>$#{flt_amount.to_s}</td></tr>\n
-TRANSACTION
-end
-
-def render_summary(flt_starting_balance, flt_total_deposits, flt_total_withdrawals, flt_ending_balance)
-  <<SUMMARY
-    <table>
-      #{render_summary_transaction "Starting Balance:", (flt_starting_balance * 100).round/100.0}
-      #{render_summary_transaction "Total Deposits:", (flt_total_deposits * 100).round/100.0}
-      #{render_summary_transaction "Total Withdrawals:", (flt_total_withdrawals * 100).round/100.0}
-      #{render_summary_transaction "Ending Balance:", (flt_ending_balance * 100).round/100.0}
-    </table>
-SUMMARY
-end
-
-def render_statement_head(title)
-  <<HEAD
-  <head>
-  <title>#{title}</title> 
-  </head>
-HEAD
-end
-
-def render_statement_body(title, arr_all_withdrawals, arr_all_deposits, arr_daily_balance, flt_starting_balance, flt_total_deposits, flt_total_withdrawals, flt_ending_balance)
-  <<BODY
-  <body>
-  <h1>#{title}</h1>
-  <h2>Withdrawals</h2>
-  #{render_transactions arr_all_withdrawals}
-  <h2>Deposits</h2>
-  #{render_transactions arr_all_deposits}
-  <h2>Daily Balance</h2>
-  #{render_daily_balances arr_daily_balance}
-  <h2>Summary</h2>
-  #{render_summary flt_starting_balance, flt_total_deposits, flt_total_withdrawals, flt_ending_balance}
-  </body>
-BODY
-end
-
-def render_statement(arr_all_withdrawals, arr_all_deposits, arr_daily_balance, flt_starting_balance, flt_total_deposits, flt_total_withdrawals, flt_ending_balance)
-  <<HTML
-    <!doctype html>
-    <html>
-    #{render_statement_head "Monthly Statement"}
-    #{render_statement_body "Monthly Statement", arr_all_withdrawals, arr_all_deposits, arr_daily_balance, flt_starting_balance, flt_total_deposits, flt_total_withdrawals, flt_ending_balance}
-  </html>
-HTML
-end
-
-statement_output = render_statement(arr_all_withdrawals, arr_all_deposits, arr_daily_balance, flt_starting_balance, flt_total_deposits, flt_total_withdrawals, flt_ending_balance)
-
-save_statement_output(statement_output, OUTPUT_FILE_NAME)
