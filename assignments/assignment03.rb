@@ -128,7 +128,7 @@ class BankAccount
     end
 
     # return a sorted list of transactions by date
-    @transactions.sort { |t1, t2| t1.date <=> t2.date }
+    @transactions.sort! { |t1, t2| t1.date <=> t2.date }
   end
 
   def starting_balance
