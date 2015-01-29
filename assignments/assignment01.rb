@@ -37,13 +37,11 @@ end
 
 # it accepts a string
 # and returns the same string with each word capitalized.
+# assumes titleize does not need to preserve non-word characters in the original string, i.e.,
+# titleize "hEllo,   WORLD" => "Hello World"
 def titleize(s)
-  words = s.split
-  caps = []
-  words.each do |word|
-    caps << word.capitalize
-  end
-  caps.join " "
+  word_array = s.split(/\W+/)
+  (word_array.map { |w| w.capitalize }).join(" ")
 end
 
 # Your method should generate the following results:
@@ -58,14 +56,16 @@ titleize "gooDbye CRUel wORLD"  #=> "Goodbye Cruel World"
 # Write your own implementation of `reverse` called `my_reverse`
 # You may *not* use the built-in `reverse` method
 def my_reverse(s)
-  output = ""
-  letters = s.split ""
-  n = letters.length
-  while n > 0
-    n -= 1
-    output << letters[n]
+  reversed_array = []
+
+  string_array = s.split("")
+  while not string_array.empty? do
+    # take a character from the end of the original string and
+    # add it to the beginning of the reversed string
+    reversed_array.push string_array.pop
   end
-  output
+
+  reversed_array.join("")
 end
 
 # Your method should generate the following results:
@@ -80,8 +80,9 @@ my_reverse "Goodbye Cruel World"  #=> "dlroW leurC eybdooG"
 # Write a method `palindrome?`
 # that determines whether a string is a palindrome
 def palindrome?(s)
-  stripped = s.delete(" ").delete(",").downcase
-  stripped == stripped.reverse
+  # remove all non-word characters, lowercase the string
+  canonical_string = s.gsub(/\W+/, '').downcase
+  canonical_string == canonical_string.reverse
 end
 
 # Your method should generate the following results:
