@@ -19,11 +19,7 @@
     s1 = self.gsub(' ', '').downcase
     s1 = s1.gsub(',', '').downcase
     s2 = s1.reverse
-    if s2 == s1 
-      true
-    else
-      false
-    end
+    s2 == s1 
   end
  end
 
@@ -153,15 +149,14 @@ end
 ba = BankAccount.new()
 ba.import_transactions('assignment02-input.csv')
 ba.each {|t| t.puts}
-puts ba.each {|t| puts t.amountval}
 
-withdrawals = transactions.select {|h| h[:type] == 'withdrawal' }
-withdrawals.sort_by! {|x| x[:date]}
-deposits = transactions.select {|h| h[:type] == 'deposit' }
-deposits.sort_by! {|x| x[:date]}
+withdrawals = ba.select {|h| h.type == 'Withdrawal' }
+withdrawals.sort_by! {|x| x.date.split('/')[1].to_i}
+deposits = ba.select {|h| h.type == 'Deposit' }
+deposits.sort_by! {|x| x.date.split('/')[1].to_i}
 
 def get_totals(records)
-  amounts = records.map {|r| r[:amount].to_f }
+  amounts = records.map {|r| r.amount }
   amounts.reduce(0) { |val, acc| val + acc }.round(2)
 end
 
@@ -174,11 +169,11 @@ def get_daily_balance(transactions)
   days = transactions.map {|t| t.date}.uniq
   days.sort_by! {|i| i.split("/")[1].to_i}
   transactions_by_day = days.reduce({}) do |acc, day|
-    acc[day] = transactions.select { |t| t[:date] == day }
+    acc[day] = transactions.select { |t| t.date == day }
     acc
   end
   sum_transactions_by_day = days.reduce({}) do |acc, day|
-    amounts = transactions_by_day[day].map {|record| record[:amount]}
+    amounts = transactions_by_day[day].map {|record| record.amount}
     sum = amounts.reduce {|acc, amount| acc.to_f + amount.to_f }
     acc[day] = sum.to_f 
     acc
@@ -194,21 +189,9 @@ def get_daily_balance(transactions)
   balances_by_day
 end
 
-#balances = get_daily_balance(nt)
+#balances = get_daily_balance(ba)
 
-def get_summable_transactions(transactions)
-  trans_vals = transactions.reject {|t| t[:date] == "date"}
-  out_trans = []
-  out_trans = trans_vals.map do |t|
-    if t[:type] == "withdrawal" then
-      t[:amount] = t[:amount].to_f * -1.0
-    else
-      t[:amount] = t[:amount].to_f 
-    end
-    t
-  end
-  # puts out_trans
-end
+
 
 #nt = get_summable_transactions(transactions)
 puts nt
@@ -218,9 +201,9 @@ get_daily_balance(nt)
 def render_record(rec)
 <<RECORD
 <tr>
-  <td>#{rec[:date]}</td>
-  <td>#{rec[:payee]}</td>
-  <td>$#{rec[:amount]}</td>
+  <td>#{rec.date.to_s}</td>
+  <td>#{rec.payee}</td>
+  <td>$#{rec.amount}</td>
 <tr>
 RECORD
 end
@@ -265,7 +248,7 @@ end
 
 
 def render_daily_balances(transactions)
-nt = get_summable_transactions(transactions)
+nt = transactions
 db = get_daily_balance(nt)
 puts db.class
 <<BALANCES
@@ -275,13 +258,12 @@ puts db.class
 BALANCES
 end
 
-
 def get_ending_balance(beginning_balance, tot_withdrawals, tot_deposits)
-  beginning_balance.to_f - tot_withdrawals.to_f + tot_deposits.to_f
+  beginning_balance.to_f + tot_withdrawals.to_f + tot_deposits.to_f
 end
 
 total_deposits = get_totals(deposits)
-total_withdrawals = get_totals(withdrawals)
+total_withdrawals = get_totals(withdrawals) * -1.0
 
 File.open('assignment02-out.htm', "w") do |outfile|
   outfile.puts "<HTML><BODY>"
@@ -289,7 +271,7 @@ File.open('assignment02-out.htm', "w") do |outfile|
   outfile.puts "<p>Total withdrawals: $#{total_withdrawals}</p>"
   outfile.puts "<p>Total deposits: $#{total_deposits}</p>"
   outfile.puts "<p>Final Balance: $#{get_ending_balance(0, total_withdrawals, total_deposits)}</p>"
-  outfile.puts render_daily_balances(transactions)
+  outfile.puts render_daily_balances(ba)
   outfile.puts render_body("Withdrawals", withdrawals)
   outfile.puts render_body("Deposits", deposits)
   outfile.puts "</BODY></HTML>"
