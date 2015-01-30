@@ -324,3 +324,19 @@ end
 ["john"].to_sentence
 ["john", "paul"].to_sentence
 [1, "paul", 3, "ringo"].to_sentence
+
+#------START OF BANK ACCOUNT STATEMENT
+
+class BankAccount
+  attr_accessor :starting_balance
+end
+
+class Transaction
+end
+
+class DepositTransaction << Transaction
+end
+
+class WithdrawalTransaction << Transaction
+end
+
