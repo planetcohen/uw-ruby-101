@@ -91,6 +91,9 @@ pluck records, :instrument  #=> ["guitar", "bass", "guitar", "drums"]
 # - summary:
 #   - starting balance, total deposits, total withdrawals, ending balance
 def bank_statement
+  
+  # ------------------------------------------------------------------------
+  # formatting helpers:
   def format_currency(amount)
     prefix = if amount < 0
       amount = -amount
@@ -121,6 +124,8 @@ def bank_statement
     "#{month_string}/#{day_string}/#{date[:year]}"
   end
   
+  # ------------------------------------------------------------------------
+  # rendering:
   def render_html(statement)
     <<-HTML
       <html>
@@ -199,6 +204,8 @@ def bank_statement
     BALANCES
   end
   
+  # ------------------------------------------------------------------------
+  # read csv file, generate txs:
   def read_txs
     File.open("assignment02-input.csv") do |file|
       lines = file.readlines
@@ -223,12 +230,14 @@ def bank_statement
     end
   end
   
+  # ------------------------------------------------------------------------
+  # calc totals for collection of txs:
   def txs_totals(txs, starting_balance)
     withdrawals = txs.select {|tx| tx[:type] == "withdrawal"}.sort {|a,b| a[:formatted_date] <=> b[:formatted_date]}
-    sum_withdrawals = withdrawals.reduce(0) {|acc, tx| puts "tx => #{tx}, acc => #{acc}"; acc += tx[:amount]}
+    sum_withdrawals = withdrawals.reduce(0) {|acc, tx| acc += tx[:amount]}
 
     deposits = txs.select {|tx| tx[:type] == "deposit"}.sort {|a,b| a[:formatted_date] <=> b[:formatted_date]}
-    sum_deposits = deposits.reduce(0) {|acc, tx| puts "tx => #{tx}, acc => #{acc}"; acc += tx[:amount]}
+    sum_deposits = deposits.reduce(0) {|acc, tx| acc += tx[:amount]}
 
     ending_balance = starting_balance + sum_deposits - sum_withdrawals
     
@@ -244,6 +253,8 @@ def bank_statement
     }
   end
   
+  # ------------------------------------------------------------------------
+  # calc statement from txs:
   def calc_statement(txs)
     statement = txs_totals txs, 0
 
@@ -267,12 +278,15 @@ def bank_statement
     statement
   end
   
+  # ------------------------------------------------------------------------
+  # write html to file:
   def write_html(html)
     File.open("assignment02-output.html", "w") do |file|
       file.write html
     end
   end
   
+  # ------------------------------------------------------------------------
   txs = read_txs
   statement = calc_statement txs
   html = render_html statement
