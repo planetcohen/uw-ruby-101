@@ -130,12 +130,14 @@ def compute_daily_balances(starting_balance, transactions)
     end
     h
   end
+
   daily_balances = {}
   current_balance = starting_balance
   (transactions_by_date.keys.min..transactions_by_date.keys.max).each do |d|
     current_balance += daily_changes[d]
     daily_balances[d] = current_balance
   end
+
   daily_balances.reduce([]) do |ary, (k, v)|
     ary << {date: k, amount: v}
   end
