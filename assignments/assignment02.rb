@@ -9,6 +9,25 @@
 
 # creates an english string from array
 
+<<<<<<< HEAD
+def to_sentence(input)
+  count = input.count
+    if count > 2
+            last = input.pop
+            input.each do |word|
+            print "#{word}, "
+            end
+            print "and #{last}"
+    elsif count == 2
+            last = input.pop
+            input.each do |word|
+            print "#{word} "
+            end
+            print "and #{last}"
+    else
+        return input.shift
+    end
+=======
 def to_sentence(ary)
   if ary.length == 0
     []
@@ -18,6 +37,7 @@ def to_sentence(ary)
     last = ary.pop
     "#{ary.join(", ")} and #{last}"
   end
+>>>>>>> afc9903ac9be9fe00c29af807aa805cb405f28b9
 end
 
 # Your method should generate the following results:
@@ -32,6 +52,27 @@ to_sentence [1, "paul", 3, "ringo"]  #=> "1, paul, 3 and ringo"
 
 # implement methods "mean", "median" on Array of numbers
 def mean(ary)
+<<<<<<< HEAD
+  count = ary.count
+  total = 0
+  ary.each do |num|
+      total = num + total
+  end
+  mean = total / count
+  return mean
+end
+
+def median(ary)
+  count = ary.count
+  total = 0
+  if !(count.even?)
+      middle = (count - 1)/2
+      return ary[middle]
+  else
+      right = (count/2)
+      left = (count/2)-1
+      return (ary[left] + ary[right])/2.to_f
+=======
   sum = ary.reduce(0) {|x, acc| acc + x}
   sum.to_f / ary.length
 end
@@ -46,6 +87,7 @@ def median(ary)
     mid_lo = sorted_ary[mid_index]
     mid_hi = sorted_ary[mid_index+1]
     (mid_lo + mid_hi)/2.0
+>>>>>>> afc9903ac9be9fe00c29af807aa805cb405f28b9
   end
 end
 
@@ -62,7 +104,13 @@ median [1, 1, 4]  #=> 1
 
 # implement method `pluck` on array of hashes
 def pluck(ary, key)
+<<<<<<< HEAD
+  ary.map do |input_hash| 
+        input_hash[key]
+    end
+=======
   ary.map {|item| item[key]}
+>>>>>>> afc9903ac9be9fe00c29af807aa805cb405f28b9
 end
 
 # Your method should generate the following results:
@@ -90,6 +138,13 @@ pluck records, :instrument  #=> ["guitar", "bass", "guitar", "drums"]
 # - daily balance
 # - summary:
 #   - starting balance, total deposits, total withdrawals, ending balance
+<<<<<<< HEAD
+
+File.open("assignment02-input.csv", "r") do |input|
+        records = input.readlines.map do |line|
+            fields = line.split ","
+        end
+=======
 def bank_statement
   
   # ------------------------------------------------------------------------
@@ -293,3 +348,4 @@ def bank_statement
   write_html html
   nil
 end
+>>>>>>> afc9903ac9be9fe00c29af807aa805cb405f28b9
