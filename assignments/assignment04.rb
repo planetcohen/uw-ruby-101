@@ -12,7 +12,9 @@
 # F[n] -> F[n-2] + F[n-1]
 
 def fib(n)
-  # your implementation here
+  return 1 if n <= 1
+
+  fib(n - 2) + fib(n - 1)
 end
 
 # expected behavior:
@@ -24,46 +26,83 @@ fib(12)    #=> 233
 
 
 # ========================================================================================
-#  Problem 2 - Queue
-
-# implement a Queue class that does not use Array.
-
-# expected behavior:
-q = Queue.new
-q.empty?            #=> true
-q.enqueue "first"
-q.empty?            #=> false
-q.enqueue "second"
-q.dequeue           #=> "first"
-q.dequeue           #=> "second"
-q.dequeue           #=> nil
-
-class Queue
-  def initialize
-    # your implementation here
-  end
-  def enqueue(item)
-    # your implementation here
-  end
-  def dequeue
-    # your implementation here
-  end
-  def empty?
-    # your implementation here
-  end
-  def peek
-    # your implementation here
-  end
-  def length
-    # your implementation here
-  end
-end
-
-
-# ========================================================================================
 #  Problem 3 - LinkedList
 
 # implement a LinkedList class that does not use Array.
+
+class LinkedList
+  class Node
+    attr_accessor :item, :link
+
+    def initialize(item, link)
+      @item = item
+      @link = link
+    end
+  end
+
+  def initialize
+    @head = @tail = nil
+    @count = 0
+  end
+
+  def empty?
+    @count == 0
+  end
+
+  def length
+    @count
+  end
+
+  def <<(item)
+    node = Node.new(item, nil)
+    if @head.nil?
+      @head = @tail = node
+    else
+      @tail.link = node
+      @tail = node
+    end
+    @count += 1
+    self
+  end
+
+  def first
+    @head.nil? ? nil : @head.item
+  end
+
+  def last
+    @tail.nil? ? nil : @tail.item
+  end
+
+  def each(&block)
+    node = @head
+    while not node.nil?
+      block.call node.item
+      node = node.link
+    end
+  end
+
+  # removes the first node matching item from the linked list
+  def delete(item)
+    node = @head
+    node_prev = nil
+    while not node.nil?
+      if node.item == item
+        if node_prev.nil?
+          @head = node.link
+          @tail = nil if @head.nil?
+        else
+          node_prev.link = node.link
+        end
+        node.link = nil
+        @count -= 1
+        return node.item
+      end
+      node_prev = node
+      node = node.link
+    end
+    nil
+  end
+end
 
 # expected behavior:
 ll = LinkedList.new
@@ -87,26 +126,47 @@ ll.delete "second"   #=> "second"
 ll.length            #=> 2
 ll.each {|x| puts x} #=> prints out "first", "third"
 
-class LinkedList
+
+# ========================================================================================
+#  Problem 2 - Queue
+
+# implement a Queue class that does not use Array.
+
+class Queue
   def initialize
-    # your implementation here
+    @list = LinkedList.new
   end
+
+  def enqueue(item)
+    @list << item
+    self
+  end
+
+  def dequeue
+    return nil if empty?
+    @list.delete(@list.first)
+  end
+
   def empty?
-    # your implementation here
+    @list.empty?
   end
+
+  def peek
+    return nil if empty?
+    @list.first.item
+  end
+
   def length
-    # your implementation here
-  end
-  def <<(item)
-    # your implementation here
-  end
-  def first
-    # your implementation here
-  end
-  def last
-    # your implementation here
-  end
-  def each(&block)
-    # your implementation here
+    @list.length
   end
 end
+
+# expected behavior:
+q = Queue.new
+q.empty?            #=> true
+q.enqueue "first"
+q.empty?            #=> false
+q.enqueue "second"
+q.dequeue           #=> "first"
+q.dequeue           #=> "second"
+q.dequeue           #=> nil
