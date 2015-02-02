@@ -107,6 +107,9 @@ end
 
 def monthlystatement
 
+require 'date'
+
+
   $file = File.open("monthlystatement.html", "w")
 
 def render_record(r)
@@ -133,15 +136,19 @@ end
 
 def render_body(title, records)
 
+total_withdrawals = 0
   withdrawals = records.select do |t|
     t[:type][0].chr == "w"
   end
-total_withdrawals = withdrawals.map {|withdrawal| withdrawal[:amount]}.reduce {|amount, acc| amount + acc}
+  total_withdrawals = withdrawals.map {|withdrawal| withdrawal[:amount]}.reduce{|amount, acc| amount + acc}
 
+
+total_deposits = 0
   deposits = records.select do |t|
     t[:type][0].chr == "d"
   end
-total_deposits = deposits.map {|deposit| deposit[:amount]}.reduce {|amount, acc| amount + acc}
+total_deposits = deposits.map {|deposit| deposit[:amount]}.reduce{|amount, acc| amount + acc}
+
 
 $file.print <<BODY
   <body>
@@ -161,27 +168,45 @@ render_records deposits
 $file.print "<h2>Daily Balance</h2>"
 $file.print "<table>"
 
-trans_dates = records.map {|trans_date| trans_date[:date]}.uniq
+daily_balance = 0
+trans_dates = records.map {|trans_date| trans_date[:date]}.uniq.sort
+#puts trans_dates
 
-trans_dates.reduce({}) do |uniq_date, acc|
-daily_balance += records.select do |b| b[:date]==uniq_date
-	end
-$file.print << ROW
+trans_dates.reduce(0) do |daily_bal, acc_date|
+  daily_deposits = records.select do |t|
+    t[:date]==acc_date and t[:type][0].chr == "d"
+  end
+  daily_deposits_amt = daily_deposits.map {|deposit| deposit[:amount]}.reduce{|amount, acc| amount + acc}
+      if daily_deposits_amt == nil
+        daily_deposits_amt = 0
+      end
+  daily_withdrawals = records.select do |t|
+    t[:date]==acc_date and t[:type][0].chr == "w"
+  end
+  daily_withdrawals_amt = daily_withdrawals.map {|withdrawal| withdrawal[:amount]}.reduce{|amount, acc| amount + acc}
+      if daily_withdrawals_amt == nil
+        daily_withdrawals_amt = 0
+      end
+daily_balance = daily_balance + daily_deposits_amt - daily_withdrawals_amt
+$file.print <<ROW
 <tr>
-	<td>#{uniq_date}</td><td>#{daily_balance}</td>
+<td>#{acc_date}</td><td>#{daily_balance}</td>
 </tr>
 ROW
 end
 
-$file.print "</table>
+
+$file.print "</table>"
+
+ending_balance = total_deposits - total_withdrawals
 
 $file.print "<h2>Summary</h2>"
 $file.print <<SUMMARY
-"<table>"
+<table>
 <tr><td>Starting Balance:</td><td>0</td></tr>
 <tr><td>Total Deposits:</td><td>#{total_deposits}</td></tr>
 <tr><td>Total Withdrawals:</td><td>#{total_withdrawals}</td></tr>
-<tr><td>Ending Balance:</td><td>#{0+total_deposits-total_withdrawals}</td></tr>
+<tr><td>Ending Balance:</td><td>#{ending_balance}</td></tr>
 </table>
 SUMMARY
 
@@ -229,7 +254,7 @@ File.open("assignment02-input.csv") do |input|
   records = input.readlines.map do |line|
   fields = line.split ","
     if x >=1
-    transaction_record << {:date => fields[0], :payee => fields[1], :amount => fields[2], :type => fields[3]}
+    transaction_record << {:date => Date.strptime(fields[0], "%m/%d/%Y"), :payee => fields[1], :amount => fields[2].to_f, :type => fields[3]}
     end
 
   #puts line
