@@ -98,15 +98,97 @@ end
 # use blocks for your HTML rendering code
 
 class BankAccount
-		attr_accessor :balance
+	attr_reader :balance, :transactions, :withdrawals, :deposits
+	attr_writer :transactions	#all other instance variables are determined by transactions
 
-	def initialize (balance)
-		@balance = balance
+	def initialize(transactions)
+		@transactions = transactions
+		@balance = 10
+		@withdrawals = 10
+		@deposits = 10
 	end
 
 	def to_s
-		"#{@balance}"
+		puts "balance = #{@balance}, transactions = #{@transactions}, withdrawals = #{@withdrawals}, deposits = #{@deposits}"
 	end
+
+	def render_html(statement)
+    <<-HTML
+      <html>
+        <head>
+          <title>Bank Statement</title>
+          <style>
+          h1,h2,th,td {font-family: Helvetica}
+          th,td {padding:4px 16px}
+          th {text-align:left}
+          td {text-align:right}
+          </style>
+        </head>
+        #{render_body statement}
+      </html>
+    HTML
+  end
+  
+  def render_body(statement)
+    <<-BODY
+      <body>
+        <h1>Bank Statement</h1>
+        #{render_summary statement[:summary]}
+        #{render_txs statement[:withdrawals], "Withdrawals"}
+        #{render_txs statement[:deposits], "Deposits"}
+        #{render_daily_balances statement[:dates], statement[:daily_balances]}
+      </body>
+    BODY
+  end
+  
+  def render_summary(summary)
+    <<-SUMMARY
+      <h2>Summary</h2>
+      <table>
+        <tr><th>Starting Balance</th> <td>#{format_currency summary[:starting_balance]}</td></tr>
+        <tr><th>Total Deposits</th>   <td>#{format_currency summary[:sum_deposits]}</td></tr>
+        <tr><th>Total Withdrawals</th><td>#{format_currency summary[:sum_withdrawals]}</td></tr>
+        <tr><th>Ending Balance</th>   <td>#{format_currency summary[:ending_balance]}</td></tr>
+      </table>
+    SUMMARY
+  end
+  
+  def render_tx(tx)
+    <<-TX
+      <tr>
+        <th>#{tx[:formatted_date]}</th>
+        <th>#{tx[:payee]}</th>
+        <td>#{format_currency tx[:amount]}</td>
+      </tr>
+    TX
+  end
+  
+  def render_txs(txs, label)
+    <<-TXS
+      <h2>#{label}</h2>
+      <table>
+        #{txs.map {|tx| render_tx tx}.join "\n"}
+      </table>
+    TXS
+  end
+  
+  def render_daily_balance(date, balance)
+    <<-TXS
+      <tr>
+        <th>#{date}</th>
+        <td>#{format_currency balance[:summary][:ending_balance]}</td>
+      </tr>
+    TXS
+  end
+  
+  def render_daily_balances(dates, balances)
+    <<-BALANCES
+      <h2>Daily Balances</h2>
+      <table>
+        #{dates.map {|date| render_daily_balance date, balances[date]}.join "\n"}
+      </table>
+    BALANCES
+  end
 
 end
 
@@ -138,46 +220,9 @@ class DepositTransaction < Transaction
 end
 
 
-class BankAccount
-    attr_accessor :balance
-
-  def initialize (balance)
-    @balance = balance
-  end
-
-  def to_s
-    "#{@balance}"
-  end
-
-end
-
-class Transaction
-  attr :date, :vendor, :amount, :type
-
-  def initialize (date, vendor, amount, type)
-    @date, @vendor, @amount, @type = date, vendor, amount, type
-  end
-
-end
 
 
-class WithdrawalTransaction < Transaction
-  def initialize(date, vendor, amount)
-    super date, vendor, amount, "withdrawal"
-  end
-end
 
-
-class DepositTransaction < Transaction
-  def initialize(date, vendor, amount)
-    super date, vendor, amount, "deposit"
-  end
-
-  def to_s
-    "#{@date, @vendor, @amount, @type}"
-  end
-  
-end
 
 
 def bank_statement
