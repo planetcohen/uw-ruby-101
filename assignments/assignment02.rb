@@ -119,6 +119,7 @@ def get_daily_balance(transactions)
     acc[day] = transactions.select { |t| t[:date] == day }
     acc
   end
+  
   sum_transactions_by_day = days.reduce({}) do |acc, day|
     amounts = transactions_by_day[day].map {|record| record[:amount]}
     sum = amounts.reduce {|acc, amount| acc.to_f + amount.to_f }
@@ -158,6 +159,7 @@ get_daily_balance(nt)
 
 def total_transactions_by_day()
   
+
 end
 
 def render_record(rec)
