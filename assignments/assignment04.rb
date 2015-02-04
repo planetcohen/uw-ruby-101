@@ -95,25 +95,57 @@ ll.length            #=> 2
 ll.each {|x| puts x} #=> prints out "first", "third"
 
 class LinkedList
+  class Node
+    attr :item, :link
+    def initialize(item, link)
+      @item = item
+      @link = link
+    end
+  end
   def initialize
-    # your implementation here
+    @nodes = nil
   end
   def empty?
-    # your implementation here
+    @nodes.nil?
   end
   def length
-    # your implementation here
+    count = 0
+    node = @nodes
+    while node
+      count += 1
+      node = node.link
+    end
+    count
   end
   def <<(item)
-    # your implementation here
+    @nodes = Node.new item, @nodes
+    self
   end
   def first
-    # your implementation here
+    node = @nodes
+    lastnode = @nodes
+    while node
+      lastnode = node
+      node = node.link
+    end
+    lastnode.item
   end
   def last
-    # your implementation here
+    @nodes.item
   end
   def each(&block)
-    # your implementation here
+    node = @nodes
+    while node
+      yield 
+      node = node.link
+    end
+  end
+  def delete(item)
+  
   end
 end
+
+ll = LinkedList.new
+ll << "first"
+ll << "second"
+ll.each {|x| puts x }
