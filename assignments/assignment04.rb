@@ -13,6 +13,13 @@
 
 def fib(n)
   # your implementation here
+  if n==0 then
+    1
+  elsif n==1 then
+    1
+  else 
+    fib(n-2) + fib(n-1)
+  end
 end
 
 # expected behavior:
@@ -40,22 +47,22 @@ q.dequeue           #=> nil
 
 class Queue
   def initialize
-    # your implementation here
+    @items = []
   end
   def enqueue(item)
-    # your implementation here
+    @items<<item
   end
   def dequeue
-    # your implementation here
+    @items.shift
   end
   def empty?
-    # your implementation here
+    @items.empty?
   end
   def peek
-    # your implementation here
+    @items[0]
   end
   def length
-    # your implementation here
+    @items.length
   end
 end
 
