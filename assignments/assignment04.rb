@@ -108,6 +108,89 @@ q.dequeue           #=> nil
 
 # implement a LinkedList class that does not use Array.
 
+class LinkedList
+
+  class Node
+    attr_accessor :item, :link
+    def initialize(item, link)
+      @item = item
+      @link = link
+    end
+  end
+
+  def initialize
+    @nodes = nil
+  end
+
+  def empty?
+    @nodes.nil?
+  end
+
+  def length
+    count = 0
+    node = @nodes
+    while node
+      count += 1
+      node = node.link
+    end
+    count
+  end
+
+  def <<(item)
+    if @nodes.nil?
+      @nodes = Node.new(item, nil)
+    else
+      node = @nodes
+      while node
+        if node.link.nil?
+          node.link = Node.new(item, nil)
+          return length
+        end
+        node = node.link
+      end
+    end
+  end
+
+  def first
+    @nodes.item
+  end
+
+  def last
+    node = @nodes
+    while node
+      if node.link.nil?
+        return node.item
+      end
+      node = node.link
+    end
+  end
+
+  def each(&block)
+    node = @nodes
+    while node
+      yield node.item
+      node = node.link
+    end
+  end
+
+  def delete(item)
+    node = @nodes
+    if node.item == item
+      @nodes = node.link
+    else
+      while node
+        if node.link.item == item
+          node.link = node.link.link
+          return item
+        end
+        node = node.link
+      end
+    end
+  end
+
+end
+
+
 # expected behavior:
 ll = LinkedList.new
 ll.empty?            #=> true
@@ -130,26 +213,3 @@ ll.delete "second"   #=> "second"
 ll.length            #=> 2
 ll.each {|x| puts x} #=> prints out "first", "third"
 
-class LinkedList
-  def initialize
-    # your implementation here
-  end
-  def empty?
-    # your implementation here
-  end
-  def length
-    # your implementation here
-  end
-  def <<(item)
-    # your implementation here
-  end
-  def first
-    # your implementation here
-  end
-  def last
-    # your implementation here
-  end
-  def each(&block)
-    # your implementation here
-  end
-end
