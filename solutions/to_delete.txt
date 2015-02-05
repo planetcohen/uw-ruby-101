@@ -1,0 +1,50 @@
+# def render_html(title, records)
+#   <<HTML
+#     <!doctype html>
+#     <html>
+#       #{render_head title}
+#       #{render_body title, records}
+#   </html>
+#   HTML
+# end
+
+# def render_head(title)
+#   <<HEAD
+#     <head>
+#       <title>#{title}</title>
+#   </head>
+#   HEAD
+# end
+
+# def render_body(title, records)
+#   <<BODY
+#     <body>
+#       <h1>#{title}</h1>
+#         #{render_records records}
+#     </body>
+#   BODY
+# end
+
+# def render_records(records)
+#   <<RECORDS
+#     <table>
+#       #{render_table_header}
+#       #{records.map {|r| render_record r}.join "\n"}
+#     </table>
+#   RECORDS
+# end
+
+# def render_record(r)
+#   <<RECORD
+#     <tr>
+#       <td>#{r[:fname]}</td>
+#       <td>#{r[:lname]}</td>
+#       <td>#{r[:age]}</td>
+#       <td>#{r[:addr][:street]}</td>
+#       <td>#{r[:addr][:city]}</td>
+#       <td>#{r[:addr][:state]}</td>
+#       <td>#{r[:addr][:zip]}</td>
+#     </tr>
+#   RECORD
+# end
+

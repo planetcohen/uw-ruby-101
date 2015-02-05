@@ -1,4 +1,6 @@
 # ========================================================================================
+#  Assignment solutions submitted by Gordon Turibamwe
+#
 #  Sample Problem - `number_to_string`
 def number_to_string(n, lang)
   lang_digit_strings = {
@@ -39,17 +41,19 @@ end
 # it accepts a string
 # and returns the same string with each word capitalized.
 def titleize(s)
-  words = s.split
-  caps = []
-  words.each do |word|
-    caps << word.capitalize
+  s = s.downcase.capitalize
+  count = 0
+  while count < s.length
+    if s[count] == " "
+      s[count + 1] = s[count + 1].capitalize
+    end
+    count += 1
   end
-  caps.join " "
+  return s
 end
 
 # Your method should generate the following results:
 titleize "hEllo WORLD"          #=> "Hello World"
-
 titleize "gooDbye CRUel wORLD"  #=> "Goodbye Cruel World"
 
 
@@ -59,19 +63,17 @@ titleize "gooDbye CRUel wORLD"  #=> "Goodbye Cruel World"
 # Write your own implementation of `reverse` called `my_reverse`
 # You may *not* use the built-in `reverse` method
 def my_reverse(s)
-  output = ""
-  letters = s.split ""
-  n = letters.length
-  while n > 0
-    n -= 1
-    output << letters[n]
+  newString = ""  # => initialize new string
+  count = s.length - 1 # => counting down
+  while count >= 0
+    newString += s[count]
+    count -= 1
   end
-  output
+  return newString
 end
 
 # Your method should generate the following results:
 my_reverse "Hello World"          #=> "dlroW olleH"
-
 my_reverse "Goodbye Cruel World"  #=> "dlroW leurC eybdooG"
 
 
@@ -80,15 +82,18 @@ my_reverse "Goodbye Cruel World"  #=> "dlroW leurC eybdooG"
 
 # Write a method `palindrome?`
 # that determines whether a string is a palindrome
-def palindrome?(s)
-  stripped = s.delete(" ").delete(",").downcase
-  stripped == stripped.reverse
+
+def palindrome?(s)  
+    string1 = s.downcase.delete(", ")
+    string2 = string1.reverse
+    string1 == string2
 end
 
 # Your method should generate the following results:
 palindrome? "abba"                             #=> true
 palindrome? "aBbA"                             #=> true
-palindrome? "abb"                              #=> false
-
+palindrome? "abb"                              #=> fputs ""
 palindrome? "Able was I ere I saw elba"        #=> true
 palindrome? "A man, a plan, a canal, Panama"   #=> true
+
+
