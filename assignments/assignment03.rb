@@ -25,7 +25,7 @@ class String
     stripped = self.delete(" ").delete(",").downcase
     stripped == stripped.reverse
   end
-end
+end 
 
 "hEllo WORLD".titleize                         #=> "Hello World"
 "gooDbye CRUel wORLD".titleize                 #=> "Goodbye Cruel World"
