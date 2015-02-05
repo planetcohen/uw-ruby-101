@@ -7,6 +7,22 @@
 
 # re-implement titleize and palindrome? as methods on String
 
+class String
+  def titleize(s)
+    words = s.split
+    caps = []
+    words.each do |word|
+      caps << word.capitalize
+      end
+    caps.join " "
+  end
+
+  def palindrome?(s)
+  stripped = s.delete(" ").delete(",").downcase
+  stripped == stripped.reverse
+  end
+end
+
 "hEllo WORLD".titleize                         #=> "Hello World"
 "gooDbye CRUel wORLD".titleize                 #=> "Goodbye Cruel World"
 
@@ -22,6 +38,37 @@
 #  Problem 2 - re-implement mean, median, to_sentence
 
 # re-implement mean, median, to_sentence as methods on Array
+
+class Array
+  def to_sentence(ary)
+    if ary.length == 0
+      []
+    elsif ary.length == 1
+      ary[0]
+    else
+      last = ary.pop
+      "#{ary.join(", ")} and #{last}"
+    end
+  end
+  
+  def mean(ary)
+    sum = ary.reduce(0) {|x, acc| acc + x}
+    sum.to_f / ary.length
+  end
+
+  def median(ary)
+    sorted_ary = ary.sort
+    len = sorted_ary.length
+    mid_index = len/2
+    if len.odd?
+      sorted_ary[mid_index]
+    else
+      mid_lo = sorted_ary[mid_index]
+      mid_hi = sorted_ary[mid_index+1]
+      (mid_lo + mid_hi)/2.0
+    end
+  end
+end
 
 # Your method should generate the following results:
 [1, 2, 3].mean     #=> 2
@@ -48,3 +95,15 @@
 # - WithdrawalTransaction
 
 # use blocks for your HTML rendering code
+class BankAccount
+end
+
+class Transaction
+end
+
+class DepositTransaction < Transaction
+end
+
+class WithdrawalTransaction < Transaction
+end
+
