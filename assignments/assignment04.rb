@@ -95,19 +95,26 @@ ll.length            #=> 2
 ll.each {|x| puts x} #=> prints out "first", "third"
 
 class LinkedList
+
   class Node
     attr :item, :link
     def initialize(item, link)
       @item = item
       @link = link
     end
+    def item=(something)
+      @item == something
+    end
   end
+  
   def initialize
     @nodes = nil
   end
+  
   def empty?
     @nodes.nil?
   end
+  
   def length
     count = 0
     node = @nodes
@@ -117,10 +124,11 @@ class LinkedList
     end
     count
   end
+  
   def <<(item)
     @nodes = Node.new item, @nodes
-    self
   end
+  
   def first
     node = @nodes
     lastnode = @nodes
@@ -140,12 +148,44 @@ class LinkedList
       node = node.link
     end
   end
-  def delete(item)
-  
+  def print_nodes
+    node = @nodes
+    while node
+      puts node.item
+      node = node.link
+    end
+    nil
+  end
+  def delete(myitem)
+    newnodes = LinkedList.new
+    node = @nodes
+    stop = false
+    while node
+      if node.item == myitem then
+        node = node.link
+        puts newnodes
+        newnodes = node
+        puts newnodes.item
+      else
+        puts newnodes
+        newnodes = node
+        puts newnodes.item
+        node = node.link
+      end
+    end
+    @nodes = newnodes
+    myitem
   end
 end
 
 ll = LinkedList.new
 ll << "first"
 ll << "second"
+ll << "third"
+ll << "fourth"
+ll << "fifth"
+ll.length
+ll.delete "third"
+ll.length
+
 ll.each {|x| puts x }
