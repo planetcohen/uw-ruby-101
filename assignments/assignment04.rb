@@ -31,7 +31,6 @@ fib(12)    #=> 233
 
 # implement a Queue class that does not use Array.
 
-
 class Queue
   class Node
     attr :item, :link
@@ -101,12 +100,10 @@ q.dequeue           #=> "second"
 q.dequeue           #=> nil
 
 
-
 # ========================================================================================
 #  Problem 3 - LinkedList
 
 # implement a LinkedList class that does not use Array.
-
 
 class LinkedList
   class Node

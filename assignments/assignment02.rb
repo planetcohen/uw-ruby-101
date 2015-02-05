@@ -36,7 +36,6 @@ def to_sentence(ary)
   end
    
   return result_ary.join
-  
 end
 
 # Your method should generate the following results:
@@ -90,9 +89,7 @@ median [1, 1, 4]  #=> 1
 
 # implement method `pluck` on array of hashes
 def pluck(ary, key)
-  key_ary =[]
   ary.map {|item| key_ary << item[key]}
-  return key_ary
 end
 
 # Your method should generate the following results:
@@ -120,7 +117,6 @@ pluck records, :instrument  #=> ["guitar", "bass", "guitar", "drums"]
 # - daily balance
 # - summary:
 #   - starting balance, total deposits, total withdrawals, ending balance
-
 def create_transaction(date, payee, amount, type)
   {date: date, payee: payee, amount: amount, type: type}
 end
@@ -330,3 +326,4 @@ def make_statement(filename)
 end
 
 make_statement "assignment02-input.csv"
+     
