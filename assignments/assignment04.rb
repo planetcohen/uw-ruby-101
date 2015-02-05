@@ -95,6 +95,7 @@ ll.length            #=> 2
 ll.each {|x| puts x} #=> prints out "first", "third"
 
 class LinkedList
+ # include Enumerable
 
   class Node
     attr :item, :link
@@ -141,13 +142,15 @@ class LinkedList
   def last
     @nodes.item
   end
+  
   def each(&block)
     node = @nodes
     while node
-      yield 
+      yield node.item
       node = node.link
     end
   end
+  
   def print_nodes
     node = @nodes
     while node
@@ -156,20 +159,15 @@ class LinkedList
     end
     nil
   end
+  
   def delete(myitem)
-    newnodes = LinkedList.new
+    newnodes = nil
     node = @nodes
-    stop = false
     while node
       if node.item == myitem then
         node = node.link
-        puts newnodes
-        newnodes = node
-        puts newnodes.item
       else
-        puts newnodes
-        newnodes = node
-        puts newnodes.item
+        newnodes = Node.new node.item, newnodes
         node = node.link
       end
     end
