@@ -12,7 +12,7 @@
 # F[n] -> F[n-2] + F[n-1]
 
 def fib(n)
-  # your implementation here
+  (n < 2) ? 1 : fib(n-2) + fib(n-1)
 end
 
 # expected behavior:
@@ -39,24 +39,45 @@ q.dequeue           #=> "second"
 q.dequeue           #=> nil
 
 class Queue
+  class Node
+    attr_accessor :item, :link
+    def initialize(item, link)
+      @item = item
+      @link = link
+    end
+  end
+ 
   def initialize
-    # your implementation here
+    @nodes = nil
   end
+ 
   def enqueue(item)
-    # your implementation here
+    @nodes = Node.new item, @nodes 
   end
+ 
   def dequeue
-    # your implementation here
+    node = @nodes
+    node.nil? ? nil : node.link
   end
+ 
   def empty?
-    # your implementation here
+    @nodes.nil?
   end
+ 
   def peek
-    # your implementation here
+    @nodes.nil? ? nil : @nodes.item
   end
+ 
   def length
-    # your implementation here
+    count = 0
+    node = @nodes
+    while node
+      count += 1
+      node = node.link
+    end
+    count
   end
+ 
 end
 
 
@@ -88,25 +109,69 @@ ll.length            #=> 2
 ll.each {|x| puts x} #=> prints out "first", "third"
 
 class LinkedList
+  class Node
+    attr_accessor :item, :link
+    def initialize(item, link)
+      @item = item
+      @link = link
+    end
+  end
+
   def initialize
-    # your implementation here
+    @nodes = nil
   end
+
   def empty?
-    # your implementation here
+    @nodes.nil?
   end
+
   def length
-    # your implementation here
+    count = 0
+    node = @nodes
+    while node
+      count += 1
+      node = node.link
+    end
+    count
   end
+
   def <<(item)
-    # your implementation here
+    @nodes = Node.new item, @nodes
   end
+
   def first
-    # your implementation here
+    @nodes.item
   end
+
   def last
-    # your implementation here
+    node = @nodes
+    while node
+      node = node.link
+    end
+    @nodes.item
   end
+
   def each(&block)
-    # your implementation here
+    node = @nodes
+    while node
+      yield node.item
+      node = node.link
+    end
   end
+
+  def delete(item)
+    node = @nodes
+    if node.item == item
+      @nodes = node.link
+    else
+      while node
+        if node.link.item == item
+          node.link = node.link.link
+          item
+        end
+        node = node.link
+      end
+    end  
+  end
+
 end
