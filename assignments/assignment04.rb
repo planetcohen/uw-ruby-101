@@ -150,14 +150,15 @@ class LinkedList
       node = node.link
     end
   end
-  
-  def print_nodes
-    node = @nodes
-    while node
-      puts node.item
-      node = node.link
+    
+  def reverse!
+    in_node = @nodes
+    out_nodes = nil
+    while in_node
+      out_nodes = Node.new in_node.item, out_nodes
+      in_node = in_node.link
     end
-    nil
+    @nodes = out_nodes
   end
   
   def delete(myitem)
@@ -172,6 +173,7 @@ class LinkedList
       end
     end
     @nodes = newnodes
+    self.reverse!
     myitem
   end
 end
