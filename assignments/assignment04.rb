@@ -12,9 +12,13 @@
 # F[n] -> F[n-2] + F[n-1]
 
 def fib(n)
-  return 1 if n <= 1
+  def fib_helper(n, acc1, acc2)
+    return acc1 if n == 0
 
-  fib(n - 2) + fib(n - 1)
+    fib_helper(n - 1, acc2, acc1 + acc2)
+  end
+
+  fib_helper(n, 1, 1)
 end
 
 # expected behavior:
