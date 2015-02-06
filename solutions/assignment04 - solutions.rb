@@ -18,11 +18,11 @@ def fib(n)
 end
 
 # expected behavior:
-# p fib(0)     #=> 1
-# p fib(1)     #=> 1
-# p fib(5)     #=> 8
-# p fib(4)     #=> 5
-# p fib(12)    #=> 233
+p fib(0)     #=> 1
+p fib(1)     #=> 1
+p fib(5)     #=> 8
+p fib(4)     #=> 5
+p fib(12)    #=> 233
 
 
 # ========================================================================================
@@ -32,26 +32,34 @@ end
 
 # expected behavior:
 q = Queue.new
-p q.empty?            #=> true
-# p q.enqueue "first"
-p q.empty?            #=> false
-# q.enqueue "second"
+q.empty?            #=> true
+q.enqueue "first"
+q.empty?            #=> false
+q.enqueue "second"
 q.dequeue           #=> "first"
 q.dequeue           #=> "second"
 q.dequeue           #=> nil
 
 class Queue
+  attr_writer :items
+
   def initialize
     @items = []
   end
+
   def enqueue(item)
-    @items<<item
+    @items << item
   end
+
   def dequeue
-    @items.shift
+    puts @items[0]
   end
   def empty?
-    @items.empty?
+    if @items.length == 0
+      puts true
+    else
+      puts false
+    end
   end
   def peek
     @items[0]
@@ -62,54 +70,64 @@ class Queue
 end
 
 
-# # ========================================================================================
-# #  Problem 3 - LinkedList
+# ========================================================================================
+#  Problem 3 - LinkedList
 
-# # implement a LinkedList class that does not use Array.
+# implement a LinkedList class that does not use Array.
 
-# # expected behavior:
-# ll = LinkedList.new
-# ll.empty?            #=> true
+# expected behavior:
+ll = LinkedList.new
+ll.empty?            #=> true
 
-# ll << "first"
-# ll.empty?            #=> false
-# ll.length            #=> 1
-# ll.first             #=> "first"
-# ll.last              #=> "first"
+ll << "first"
+ll.empty?            #=> false
+ll.length            #=> 1
+ll.first             #=> "first"
+ll.last              #=> "first"
 
-# ll << "second"
-# ll.length            #=> 2
-# ll.first             #=> "first"
-# ll.last              #=> "second"
+ll << "second"
+ll.length            #=> 2
+ll.first             #=> "first"
+ll.last              #=> "second"
 
-# ll << "third"        #=> 3
-# ll.each {|x| puts x} #=> prints out "first", "second", "third"
+ll << "third"        #=> 3
+ll.each {|x| puts x} #=> prints out "first", "second", "third"
 
-# ll.delete "second"   #=> "second"
-# ll.length            #=> 2
-# ll.each {|x| puts x} #=> prints out "first", "third"
+ll.delete "second"   #=> "second"
+ll.length            #=> 2
+ll.each {|x| puts x} #=> prints out "first", "third"
 
-# class LinkedList
-#   def initialize
-#     # your implementation here
-#   end
-#   def empty?
-#     # your implementation here
-#   end
-#   def length
-#     # your implementation here
-#   end
-#   def <<(item)
-#     # your implementation here
-#   end
-#   def first
-#     # your implementation here
-#   end
-#   def last
-#     # your implementation here
-#   end
-#   def each(&block)
-#     # your implementation here
-#   end
-# end
-
+class LinkedList
+  def initialize
+    @arr = []
+  end
+  def empty?
+    if @arr.length == 0
+      puts true
+    else
+      puts false
+    end
+  end
+  def length
+    puts @arr.length
+  end
+  def <<(item)
+    @arr << item
+  end
+  def first
+    puts @arr[0]
+  end
+  def last
+    puts @arr.last
+  end
+  def each(&block)
+    yield@arr
+  end
+  def delete(toDelete)
+    @arr.each do |item|
+      if item == toDelete
+        @arr.delete(item)
+      end
+    end
+  end
+end
