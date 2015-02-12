@@ -173,82 +173,194 @@ puts ""
 pluck(records, :instrument)
 puts "---END OF PROBLEM 3---"
 
-def create_transaction(date, payee, amount, type)
-  {date: date, payee: payee, amount: amount, type: type}
+def starting_balance_method
+  starting_balance = 0.00
 end
 
-transaction_records = {}
-file_path = "/Users/hotero001/Documents/UW_ROR/assignment02-input.csv"
-File.open(file_path) do |input|
-  records = input.readlines.map do |line|
-    fields = line.split(",")
-    transaction = create_transaction(fields[0], fields[1], fields[2], fields[3])
+def withdrawal_transactions
+  File.open("csv.csv") do |file|
+    lines = file.readlines
+    separation_processes = lines.shift.chomp.split(",")
+    withdrawals = []
+    lines.each do |i|
+      if i.include?("withdrawal")
+        withdrawals << i
+      end
+    end
+    return withdrawals
   end
-  transaction_records = records
-  input.close
 end
 
-def render_html(title, records)
-  <<HTML
-    <!doctype html>
-      <html>
-      #{render_head title}
-      #{render_body title, records[1..-1]} #omit first line of transaction_records, which is {date: 'date', payee: 'payee'..etc.}
-      </html>
+def deposit_transactions
+  File.open("csv.csv") do |file|
+    lines = file.readlines
+    separation_processes = lines.shift.chomp.split(",")
+    deposits = []
+    lines.each do |i|
+      if i.include?("deposit")
+        deposits << i
+      end
+    end
+    return deposits
+  end
+end
+
+def calculate_final_balance_after_all_transactions
+  File.open("csv.csv") do |file|
+    lines = file.readlines
+    separation_processes = lines.shift.chomp.split(",")
+    withdrawals = []
+    deposits = []
+    lines.each do |i|
+      if i.include?("withdrawal")
+	withdrawals << i
+      else
+	deposits << i
+      end
+    end
+    deposit_manip = deposits.map {|i| i.split(",")}.flatten!
+    deposit_txs =  deposit_manip.reject {|i| deposit_manip.index(i).odd?}
+    deposit_sum = deposit_txs.each_slice(2).inject(0) {|i, (j,k)| i += k.to_f}
+
+    withdrawal_manip = withdrawals.map {|i| i.split(",")}.flatten!
+    withdrawal_txs = withdrawal_manip.reject {|i| withdrawal_manip.index(i).odd?}
+    withdrawal_sum = withdrawal_txs.each_slice(2).inject(0) {|i, (j,k)| i += k.to_f}
+
+    final_balance = deposit_sum - withdrawal_sum
+    return "Your balance after all transactions is $#{final_balance.round(2)}"
+  end
+end
+
+def date_to_julian(some_date)
+#method that converts the date in the format (mm/dd/yyyy) into a julian date
+#*DID NOT ACCOUNT FOR LEAP YEAR, SINCE 2014 IS NOT A LEAP YEAR*
+  date_array = some_date.split("/")
+  month = date_array[0].to_i
+  day = date_array[1].to_i
+  if month == 1
+    julian_date = day
+  elsif month == 2
+    julian_date = 31 + day
+  elsif month == 3
+    julian_date = 59 + day
+  elsif month == 4
+    julian_date = 90 + day
+  elsif month == 5
+    julian_date = 120 + day
+  elsif month == 6
+    julian_date = 151 + day
+  elsif month == 7
+    julian_date = 181 + day
+  elsif month == 8
+    julian_date = 212 + day
+  elsif month == 9
+    julian_date = 243 + day
+  elsif month == 10
+    julian_date = 273 + day
+  elsif month == 11
+    julian_date = 304 + day
+  elsif month == 12
+    julian_date = 334 + day
+  else
+    puts "You did not enter a valid date"
+    daily_balance_up_until_some_date
+  end
+  return julian_date	
+end
+
+def daily_balance_up_until_some_date
+  puts "Please enter a date for which you would like to calculate your balance
+  up until the end of that date, in the following format mm/dd/yyyy, or if the
+  month or date is in the single digit, enter it in the following format
+  m/d/yyyy and then hit ENTER:  " 
+  end_date = gets.chomp
+  date_to_julian(end_date)
+  File.open("csv.csv") do |file|
+    lines = file.readlines
+    separation_processes = lines.shift.chomp.split(",")
+    new_lines = lines.reject {|i| date_to_julian(i[0..9]) > date_to_julian(end_date)}
+    withdrawals = []
+    deposits = []
+    new_lines.each do |i|
+      if i.include?("withdrawal")
+	withdrawals << i
+      else
+	deposits << i
+      end
+    end
+    deposit_manip = deposits.map {|i| i.split(",")}.flatten!
+    deposit_txs =  deposit_manip.reject {|i| deposit_manip.index(i).odd?}
+    deposit_sum = deposit_txs.each_slice(2).inject(0) {|i, (j,k)| i += k.to_f}
+
+    withdrawal_manip = withdrawals.map {|i| i.split(",")}.flatten!
+    withdrawal_txs = withdrawal_manip.reject {|i| withdrawal_manip.index(i).odd?}
+    withdrawal_sum = withdrawal_txs.each_slice(2).inject(0) {|i, (j,k)| i += k.to_f}
+
+    final_balance_after_some_date = deposit_sum - withdrawal_sum
+    return "Your balance after all transactions up to the end of the day on #{end_date} is $#{final_balance_after_some_date.round(2)}"
+  end
+end
+
+def deposit_total_amount(some_deposits)
+  deposit_manip = some_deposits.map {|i| i.split(",")}.flatten!
+  deposit_txs =  deposit_manip.reject {|i| deposit_manip.index(i).odd?}
+  deposit_sum = deposit_txs.each_slice(2).inject(0) {|i, (j,k)| i += k.to_f}
+  return deposit_sum.round(2)
+end
+
+def withdrawals_total_amount(some_withdrawals)
+  withdrawal_manip = some_withdrawals.map {|i| i.split(",")}.flatten!
+  withdrawal_txs = withdrawal_manip.reject {|i| withdrawal_manip.index(i).odd?}
+  withdrawal_sum = withdrawal_txs.each_slice(2).inject(0) {|i, (j,k)| i += k.to_f}
+  return withdrawal_sum.round(2)
+end
+
+def render_html
+  <<-HTML
+    <html>
+      <head>
+	<title>Bank Account Statement</title>
+      </head>
+
+    <body>
+			
+	<h5>List of Withdrawals</h5>
+	#{withdrawal_transactions}
+
+	<h5>List of Deposits</h5>
+	#{deposit_transactions}
+
+	<h5>Daily Balance</h5>
+	#{daily_balance_up_until_some_date}
+
+	<h3>Summary</h3>
+
+	<h5>Starting Balance</h5>
+	#{starting_balance_method}
+
+	<h5>Sum of Deposits</h5>
+	#{deposit_total_amount(deposit_transactions)}
+
+	<h5>Sum of Withdrawals</h5>
+	#{withdrawals_total_amount(withdrawal_transactions)}
+
+	<h5>Ending Balance</h5>
+	#{calculate_final_balance_after_all_transactions}
+
+    </body>
+  </html>
   HTML
 end
 
-def render_head(title)
-  <<HEAD
-    <head>
-      <title>#{title}</title>
-    </head>
-  HEAD
+def create_html_file(some_file)
+  File.open("csv.csv", "w") do |file|
+  file.write some_file
+  end
 end
 
-def render_body(title, records)
-  <<BODY
-    <body>
-      <h1>#{title}</h1>
-      #{render_records records}
-    </body>
-  BODY
-end
+create_html_file(render_html)
 
-def render_records(records)
-  <<RECORDS
-    <table>
-      #{render_table_header}
-      #{records.map {|r| render_record r}.join "\n"}
-    </table>
-  RECORDS
-end
-
-def render_table_header
-  <<TABLE_HEADER
-    <thead>
-      <th>DATE</th>
-      <th>Payee</th>
-      <th>Amount</th>
-      <th>Type</th>
-    </thead>
-  TABLE_HEADER
-end
-
-def render_record(r)
-  <<RECORD
-    <tr>
-      <td>#{r[:date]}</td>
-      <td>#{r[:payee]}</td>
-      <td>#{r[:amount]}</td>
-      <td>#{r[:type]}</td>
-    </tr>
-  RECORD
-end
-
-
-
-
+#----------------- END OF PROBLEM 4 & ASSINGMENT 2
 #----------------- BEGINNING OF ASSIGNMENT 3
 
 class String
