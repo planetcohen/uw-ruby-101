@@ -34,15 +34,15 @@ class TestPropReader < Minitest::Test
 +   @obj = PropReader.new "spicy"
 + end
 +
-+ def test_respond_to_flavor
++ def test_responds_to_flavor
 +   assert @obj.respond_to? :flavor
 + end
 +
 + def test_not_respond_to_flavor=
-+   refute @obj.respond_to? :"flavor="
++   assert_equal false, @obj.respond_to? :"flavor="
 + end
 +
-+ def test_flavor_equals
++ def test_flavor
 +   assert_equal @obj.flavor, "spicy"
 + end
 +end
