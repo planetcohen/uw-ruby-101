@@ -28,6 +28,6 @@ class PropReaderTest < Minitest::Test
 end
 
 obj = PropReader.new("spicy")
-puts obj.respond_to? :flavor #=> true
-puts obj.respond_to? :"flavor=" #=> false 
-puts obj.flavor #=> spicy
+obj.respond_to? :flavor #=> true
+obj.respond_to? :"flavor=" #=> false 
+obj.flavor #=> spicy
