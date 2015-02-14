@@ -109,26 +109,26 @@ class LinkedList
 end
 
 # expected behavior:
-ll = LinkedList.new
-ll.empty?            #=> true
-
-ll << "first"
-ll.empty?            #=> false
-ll.length            #=> 1
-ll.first             #=> "first"
-ll.last              #=> "first"
-
-ll << "second"
-ll.length            #=> 2
-ll.first             #=> "first"
-ll.last              #=> "second"
-
-ll << "third"        #=> 3
-ll.each {|x| puts x} #=> prints out "first", "second", "third"
-
-ll.delete "second"   #=> "second"
-ll.length            #=> 2
-ll.each {|x| puts x} #=> prints out "first", "third"
+# ll = LinkedList.new
+# ll.empty?            #=> true
+#
+# ll << "first"
+# ll.empty?            #=> false
+# ll.length            #=> 1
+# ll.first             #=> "first"
+# ll.last              #=> "first"
+#
+# ll << "second"
+# ll.length            #=> 2
+# ll.first             #=> "first"
+# ll.last              #=> "second"
+#
+# ll << "third"        #=> 3
+# ll.each {|x| puts x} #=> prints out "first", "second", "third"
+#
+# ll.delete "second"   #=> "second"
+# ll.length            #=> 2
+# ll.each {|x| puts x} #=> prints out "first", "third"
 
 
 # ========================================================================================
@@ -166,11 +166,11 @@ class Queue
 end
 
 # expected behavior:
-q = Queue.new
-q.empty?            #=> true
-q.enqueue "first"
-q.empty?            #=> false
-q.enqueue "second"
-q.dequeue           #=> "first"
-q.dequeue           #=> "second"
-q.dequeue           #=> nil
+# q = Queue.new
+# q.empty?            #=> true
+# q.enqueue "first"
+# q.empty?            #=> false
+# q.enqueue "second"
+# q.dequeue           #=> "first"
+# q.dequeue           #=> "second"
+# q.dequeue           #=> nil
