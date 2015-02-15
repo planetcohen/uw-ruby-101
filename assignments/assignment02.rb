@@ -20,6 +20,7 @@ def to_sentence(ary)
   end
 end
 
+
 # Your method should generate the following results:
 to_sentence []                       #=> ""
 to_sentence ["john"]                 #=> "john"
