@@ -7,9 +7,7 @@
 
 class Class
   def prop_reader(prop_name)
-    define_method prop_name do
-      instance_variable_get "@#{prop_name}" 
-    end
+    define_method (prop_name) { instance_variable_get "@#{prop_name}" }
   end
 end
 
