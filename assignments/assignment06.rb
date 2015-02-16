@@ -124,38 +124,38 @@ module Assignment6
     end
   
     def create_dsl
-    <<-DSL.gsub /^\s+/, "" 
+    <<-DSL.gsub /^ {4}/, "" 
     recipe "#{@name}" do
-      #{ingredients}
-      #{steps}
+    #{ingredients}
+    #{steps}
     end
     DSL
     end
-    
+        
     def ingredients
-    <<-INGREDIENTS
+    <<-INGREDIENTS.gsub /^ {4}/, "" 
       ingredients do
-        #{@ingredients.map {|i| ingredient(i)}.join "" }
+    #{@ingredients.map {|i| ingredient(i)}.join "" } 
       end
     INGREDIENTS
     end
    
     def ingredient(ingredient)
-    <<-ING
-      x "#{ingredient}"
+    <<-ING.gsub /\A {8}/, "    " 
+           x "#{ingredient}"
     ING
     end
     
     def step(step)
-    <<-STEP
-      x "#{step}"
+    <<-STEP.gsub /^ {4}/, "" 
+           x "#{step}"
     STEP
     end
     
     def steps
-    <<-STEPS
+    <<-STEPS.gsub /^ {4}/, "" 
       steps do
-        #{@steps.map {|s| step(s)}.join "" }
+    #{@steps.map {|s| step(s)}.join "" }
       end
     STEPS
     end
