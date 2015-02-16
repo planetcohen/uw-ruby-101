@@ -124,39 +124,39 @@ module Assignment6
     end
   
     def create_dsl
-    <<-DSL.gsub /^ {4}/, "" 
+    # is there a prettier way of dealing with indentation in heredocs
+    #   that doesn't involve the weird tab alignments in the Ruby code, as below? 
+    #   I tried playing with gsub but it got quite confusing with all the embedded heredocs.
+    <<-DSL.gsub /\A {4}/, "" 
     recipe "#{@name}" do
-    #{ingredients}
-    #{steps}
-    end
+#{ingredients}
+#{steps}end
     DSL
     end
         
     def ingredients
-    <<-INGREDIENTS.gsub /^ {4}/, "" 
-      ingredients do
-    #{@ingredients.map {|i| ingredient(i)}.join "" } 
-      end
+    <<-INGREDIENTS
+  ingredients do
+#{@ingredients.map {|i| ingredient(i)}.join "" }  end
     INGREDIENTS
     end
    
     def ingredient(ingredient)
-    <<-ING.gsub /\A {8}/, "    " 
-           x "#{ingredient}"
+    <<-ING
+    x "#{ingredient}"
     ING
     end
     
     def step(step)
-    <<-STEP.gsub /^ {4}/, "" 
-           x "#{step}"
+    <<-STEP
+    x "#{step}"
     STEP
     end
     
     def steps
-    <<-STEPS.gsub /^ {4}/, "" 
-      steps do
-    #{@steps.map {|s| step(s)}.join "" }
-      end
+    <<-STEPS
+  steps do
+#{@steps.map {|s| step(s)}.join "" }  end
     STEPS
     end
   end
