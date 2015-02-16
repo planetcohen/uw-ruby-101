@@ -6,8 +6,9 @@
 #  Problem 1 - PriorityQueue
 
 # implement a PriorityQueue, validate using MiniTest unit tests
+module Assignment06
 
-class PriorityQueue
+class aPriorityQueue
   def initialize
     # your implementation here
   end
@@ -28,8 +29,9 @@ class PriorityQueue
   end
 end
 
+end # module Assignment06
 # expected results:
-pq = PriorityQueue.new
+pq = aPriorityQueue.new
 pq.empty?      #=> true
 
 pq.enqueue "first"
