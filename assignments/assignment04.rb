@@ -12,7 +12,8 @@
 # F[n] -> F[n-2] + F[n-1]
 
 def fib(n)
-  # your implementation here
+  return  n  if ( 0..1 ).include? n
+  ( fib( n - 1 ) + fib( n - 2 ) )
 end
 
 # expected behavior:
@@ -39,23 +40,40 @@ q.dequeue           #=> "second"
 q.dequeue           #=> nil
 
 class Queue
+  class Node
+    attr_accessor :item, :link
+    def initialize(item, link)
+      @item = item
+      @link = link
+    end
+  end
+  
   def initialize
-    # your implementation here
+    @nodes = nil
   end
+  
   def enqueue(item)
-    # your implementation here
+    node = @nodes
+    if node
+      while node.link
+      node = node.link
+    @nodes = Node.new item, @nodes
   end
+  
   def dequeue
-    # your implementation here
+    @items.shift
   end
+  
   def empty?
-    # your implementation here
+    @nodes.empty?
   end
+  
   def peek
-    # your implementation here
+    @nodes
   end
+  
   def length
-    # your implementation here
+    @items.length
   end
 end
 
