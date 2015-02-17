@@ -12,7 +12,8 @@
 # F[n] -> F[n-2] + F[n-1]
 
 def fib(n)
-  # your implementation here
+  return 1 if n <= 1
+  return fib(n-2) + fib(n-1)
 end
 
 # expected behavior:
@@ -39,24 +40,38 @@ q.dequeue           #=> "second"
 q.dequeue           #=> nil
 
 class Queue
-  def initialize
-    # your implementation here
+  class Node
+  attr :item, :link
+  
+   def initialize(item, link)
+     @item = item
+     @link = link
+   end
   end
-  def enqueue(item)
-    # your implementation here
-  end
-  def dequeue
-    # your implementation here
-  end
-  def empty?
-    # your implementation here
-  end
-  def peek
-    # your implementation here
-  end
-  def length
-    # your implementation here
-  end
+
+   def initialize
+     @nodes = nil
+   end
+
+   def empty?
+     @nodes.nil?
+   end
+ 
+   def enqueue(item)
+     @nodes = Node.new item, @nodes
+     self
+   end
+
+   def dequeue
+     node = @nodes
+     @nodes = node.nil? ? nil : node.link
+     node.nil? ? nil : node.item
+   end
+ 
+   def peek
+     @nodes.nil? ? nil : @nodes.item
+   end
+
 end
 
 
@@ -88,25 +103,53 @@ ll.length            #=> 2
 ll.each {|x| puts x} #=> prints out "first", "third"
 
 class LinkedList
-  def initialize
-    # your implementation here
+  class Node
+  attr :item
+
+    def initialize(item)
+      @item = item
+    end
   end
-  def empty?
-    # your implementation here
-  end
-  def length
-    # your implementation here
-  end
-  def <<(item)
-    # your implementation here
-  end
-  def first
-    # your implementation here
-  end
-  def last
-    # your implementation here
-  end
-  def each(&block)
-    # your implementation here
-  end
+
+   def initialize
+     @nodes = nil
+   end
+
+   def empty?
+     @nodes.nil?
+   end
+   
+   def length
+     count = 0
+     node = @nodes
+     while node
+       count += 1
+       node = node
+     end
+     count
+    end
+
+   def <<(item)
+   	n = Node.new item, @nodes
+   	if self.length == 0 
+     @first = n
+    end
+    @item = n
+   end
+
+   def first
+     @nodes.first
+   end
+
+   def last
+     @nodes.last
+   end
+
+   def delete
+   	 @nodes.delete
+   end
+
+   def each(&block)
+     @nodes.each(&block)
+   end
 end
