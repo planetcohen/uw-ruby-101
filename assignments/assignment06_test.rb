@@ -20,7 +20,7 @@ class TestAssignment06 < Minitest::Test
     pq.enqueue "last", :low
     pq.enqueue "second"
     pq.enqueue "another top", :high
-    assert pq.length == 4
+    assert pq.length == 5
   end
   def test_04
     pq = PriorityQueue.new

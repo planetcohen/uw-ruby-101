@@ -10,28 +10,65 @@ module Assignment06
 
 class PriorityQueue
   def initialize
-    # your implementation here
+    @items_high = []
+    @items_medium = []
+    @items_low = []
   end
+
   def enqueue(item, priority=:medium)
-    # your implementation here
+    if priority == :high
+      @items_high << item
+    elsif priority == :low
+      @items_low << item
+    else
+      @items_medium << item
+    end
   end
+
   def dequeue
-    # your implementation here
+    if @items_high.empty?
+      if @items_medium.empty?
+        if @items_low.empty?
+          return nil
+        else
+          @items_low.shift
+        end
+      else
+        @items_medium.shift
+      end
+    else 
+      @items_high.shift
+    end
   end
+
   def empty?
-    # your implementation here
+    @items_high.empty? && @items_medium.empty? && @items_low.empty?
   end
+
   def peek
-    # your implementation here
+    if @items_high.empty?
+      if @items_medium.empty?
+        if @items_low.empty?
+          nil
+        else
+          @items_low.first
+        end
+      else
+        @items_medium.first
+      end
+    else 
+      @items_high.first
+    end
   end
+
   def length
-    # your implementation here
+    @items_high.length + @items_medium.length + @items_low.length
   end
 end
 
 end # module Assignment06
 # expected results:
-pq = PriorityQueue.new
+pq = Assignment06::PriorityQueue.new
 pq.empty?      #=> true
 
 pq.enqueue "first"
