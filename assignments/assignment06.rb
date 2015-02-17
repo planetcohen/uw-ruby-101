@@ -220,6 +220,23 @@ class Recipe
   
   def render_dsl
     # your code here
+    puts "#{self.class.to_s.downcase} \"#{@name}\" do"
+    my_methods = self.methods - Object.methods
+    my_methods.delete(__method__)
+    my_methods.each do |method|
+      unless method =~ /=/
+        if self.send(method).kind_of? Array
+          puts "  #{method.to_s} do"
+          self.send(method).each do |item|
+            puts "    x \"#{item}\""
+          end
+          puts "  end"
+        else
+          puts "  #{method.to_s} \"#{self.send(method)}\""
+        end
+      end
+    end
+    puts "end"
   end
 end
 
