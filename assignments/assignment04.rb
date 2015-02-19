@@ -12,8 +12,9 @@
 # F[n] -> F[n-2] + F[n-1]
 
 def fib(n)
-  # your implementation here
-end
+    return  1  if n <= 1 
+    fib(n - 2) + fib(n - 1)
+end 
 
 # expected behavior:
 fib(0)     #=> 1
@@ -28,6 +29,41 @@ fib(12)    #=> 233
 
 # implement a Queue class that does not use Array.
 
+lass Queue
+  class Node
+    attr :item, :link
+    def initialize(item, link)
+      @item = item
+      @link = link
+    end
+  end
+  def initialize
+    @nodes = nil
+  end
+  def enqueue(item)
+    @nodes << item
+    self
+  end
+  def dequeue
+    @nodes.shift
+  end
+  def empty?
+    @nodes.nil?
+  end
+  def peek
+    @nodes.nil? ? nil : @nodes.item
+  end
+  def length
+    count = 0
+    node = @nodes
+    while node
+      count += 1
+      node = node.link
+    end
+    count
+  end
+end
+
 # expected behavior:
 q = Queue.new
 q.empty?            #=> true
@@ -38,32 +74,49 @@ q.dequeue           #=> "first"
 q.dequeue           #=> "second"
 q.dequeue           #=> nil
 
-class Queue
-  def initialize
-    # your implementation here
-  end
-  def enqueue(item)
-    # your implementation here
-  end
-  def dequeue
-    # your implementation here
-  end
-  def empty?
-    # your implementation here
-  end
-  def peek
-    # your implementation here
-  end
-  def length
-    # your implementation here
-  end
-end
 
 
 # ========================================================================================
 #  Problem 3 - LinkedList
 
 # implement a LinkedList class that does not use Array.
+
+class LinkedList
+  class Node
+    attr :item, :link
+    def initialize(item, link)
+      @item = item
+      @link = link
+    end
+  end
+  def initialize
+    @nodes = nil
+  end
+  def empty?
+    @nodes.nil?
+  end
+  def length
+    count = 0
+    node = @nodes
+    while node
+      count += 1
+      node = node.link
+    end
+    count
+  end
+  def <<(item)
+    # your implementation here
+  end
+  def first
+    @start.item
+  end
+  def last
+    # your implementation here
+  end
+  def each(&block)
+    # your implementation here
+  end
+end
 
 # expected behavior:
 ll = LinkedList.new
@@ -87,26 +140,3 @@ ll.delete "second"   #=> "second"
 ll.length            #=> 2
 ll.each {|x| puts x} #=> prints out "first", "third"
 
-class LinkedList
-  def initialize
-    # your implementation here
-  end
-  def empty?
-    # your implementation here
-  end
-  def length
-    # your implementation here
-  end
-  def <<(item)
-    # your implementation here
-  end
-  def first
-    # your implementation here
-  end
-  def last
-    # your implementation here
-  end
-  def each(&block)
-    # your implementation here
-  end
-end
