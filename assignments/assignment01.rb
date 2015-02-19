@@ -462,11 +462,11 @@ end
 
 def fibonacci(n)
   if n < 0
-  	return "Can not calculate the Fibonacci sequence of a negative number."
+    return "Can not calculate the Fibonacci sequence of a negative number."
   elsif n == 0 || n == 1
-  	return 1
+    return 1
   else
-  	fibonacci(n-1) + fibonacci(n-2)
+    fibonacci(n-1) + fibonacci(n-2)
   end
 end
 
@@ -480,61 +480,61 @@ fibonacci(12)
 #-------------------------------------------------------- Problem 2
 
 class Queue
-	class Node
-		attr_accessor :item, :link
-		def initialize(item, link)
-			@item = item
-			@link = link
-		end
-	end
+  class Node
+    attr_accessor :item, :link
+    def initialize(item, link)
+      @item = item
+      @link = link
+    end
+  end
 
-	def initialize
-		@nodes = nil
-	end
+  def initialize
+    @nodes = nil
+  end
 
-	def enqueue(item)
-		node = @nodes
-		if node
-			while node.link
-				node = node.link
-			end
+  def enqueue(item)
+    node = @nodes
+    if node
+      while node.link
+      node = node.link
+      end
 
-			node.link = Node.new(item, nil)
-		else
-			@nodes = Node.new(item, nil)
-		end
-	end
+    node.link = Node.new(item, nil)
+    else
+      @nodes = Node.new(item, nil)
+    end
+  end
 
-	def dequeue
-		node = @nodes
-		if node.nil?
-			@nodes = nil
-		else
-			@nodes = node.link
-			node.item
-		end
-	end
+  def dequeue
+    node = @nodes
+    if node.nil?
+      @nodes = nil
+    else
+      @nodes = node.link
+      node.item
+    end
+  end
 
-	def empty?
-		@nodes.nil?
-	end
+  def empty?
+    @nodes.nil?
+  end
 
-	def peek
-		if @nodes.nil?
-			nil
-		else
-			@nodes.item
-		end
-	end
+  def peek
+    if @nodes.nil?
+      nil
+    else
+      @nodes.item
+    end
+  end
 
-	def length
-		node = @nodes
-		i = 0
-		while node
-			node = node.link
-			i += 1
-		end
-	end
+  def length
+    node = @nodes
+    i = 0
+    while node
+      node = node.link
+      i += 1
+    end
+  end
 end
 
 q = Queue.new
@@ -551,82 +551,82 @@ q.dequeue
 
 class LinkedList
 
-	class Node
-		attr_accessor :item, :link
-		def initialize(item, link)
-			@item = item
-			@link = link
-		end
-	end
+  class Node
+    attr_accessor :item, :link
+    def initialize(item, link)
+      @item = item
+      @link = link
+  end
+end
 
-	def initialize
-		@initialize = nil
-		@end = @initialize
-	end
+def initialize
+  @initialize = nil
+  @end = @initialize
+end
 
-	def empty?
-		@initialize.nil?
-	end
+def empty?
+  @initialize.nil?
+end
 
-	def length
-		new_length = 0
-		node = @initialize
-		while node
-			new_length += 1
-			node = node.link
-		end
-		new_length
-	end
+def length
+  new_length = 0
+  node = @initialize
+  while node
+    new_length += 1
+    node = node.link
+  end
+  new_length
+end
 
-	def <<(item)
-		if @initialize.nil?
-			@initialize = Node.new(item, nil)
-			@end = @initialize
-		else
-			node_finish = @end
-			node_finish.link = Node.new(item, nil)
-			@end = node_finish.link
-		end
-	end
+def <<(item)
+  if @initialize.nil?
+    @initialize = Node.new(item, nil)
+    @end = @initialize
+  else
+    node_finish = @end
+    node_finish.link = Node.new(item, nil)
+    @end = node_finish.link
+  end
+end
 
-	def delete(item)
-		initial = nil
-		node = @initialize
+def delete(item)
+  initial = nil
+  node = @initialize
 
-		if @initialize.item == item
-			@initialize = @initialize.link
-		else
-			while node != item and node.item != item
-				initial = node
-				node = node.link
-			end
+  if @initialize.item == item
+    @initialize = @initialize.link
+  else
+    while node != item and node.item != item
+      initial = node
+      node = node.link
+    end
 
-			if node == item and @end.item == item
-				@end = initial
-				@end.link = nil
-			elsif node
-				initial.link = node.link
-			else
-				nil
-			end
-		end
-	end
+  if node == item and @end.item == item
+    @end = initial
+    @end.link = nil
+  elsif node
+    initial.link = node.link
+  else
+    nil
+  end
+end
+end
 
-	def first
-		@initialize.item
-	end
+def first
+  @initialize.item
+end
 
-	def last
-		@end.item
-	end
+def last
+  @end.item
+end
 
-	def each(&block)
-		node = @initialize
-		while node do
-			block.call node.item
-			node = node.link
-		end
-	end
+def each(&block)
+  node = @initialize
+  while node do
+    block.call node.item
+    node = node.link
+    end
+  end
 end
 
 ll = LinkedList.new
