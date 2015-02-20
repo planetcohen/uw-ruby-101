@@ -88,16 +88,31 @@ pq.dequeue    #=> "last"
 
 # render a Recipe object to Recipe DSL
 
+
 class Recipe
   attr_accessor :steps, :ingredients, :name, :category, :prep_time, :rating
   def initialize(name)
     @name = name
   end
   
-  def render_dsl
-    # your code here
+  def render_ingredients
+    return if ingredients.none?
+    <<-DSL
+      ingredients do
+      #{ingredients.map {|i| "x \"#{x}\""}}.join "\n"}
+    end
+    DSL
   end
-end
+  
+  def render_dsl
+    <<-DSL
+      recipe "#{name}" do
+      rating "#{rating}"
+      #{render_ingredients}
+      end
+     DSL
+   end
+  end
 
 class RecipeBuilder
   def recipe(name, &block)
