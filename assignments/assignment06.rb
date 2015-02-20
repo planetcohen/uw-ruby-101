@@ -10,55 +10,55 @@
 require 'minitest/autorun'
 
 class Element
-	#include Comparable
+  #include Comparable
 
-	attr_accessor :name, :priority
+  attr_accessor :name, :priority
 
-	def initialize(name, priority=:medium)
-		if priority == :high
-			priority = 4
-		elsif priority == :medium
-			priority = 3
-		else priority == :low
-			priority = 1
-		end
-		@name, @priority=name, priority
-	end
+  def initialize(name, priority=:medium)
+    if priority == :high
+      priority = 4
+    elsif priority == :medium
+      priority = 3
+    else priority == :low
+      priority = 1
+    end
+    @name, @priority=name, priority
+  end
 
-	def <=>(other)
-		@priority <=> other.priority
-	end
+  def <=>(other)
+    @priority <=> other.priority
+  end
 end
 
 class PriorityQueue
 
-	attr_accessor :elements
+  attr_accessor :elements
 
-	def initialize
-		@elements = []
-	end
+  def initialize
+    @elements = []
+  end
 
-	def enqueue(element)#<<(element)
-		@elements<<element
-	end
+  def enqueue(element)#<<(element)
+    @elements<<element
+  end
 
-	def empty?
-		@elements.empty?
-	end
+  def empty?
+    @elements.empty?
+  end
 
-	def dequeue
-		last_element_index = @elements.size - 1
-		@elements.sort!
-		@elements.delete_at(last_element_index)
-	end
+  def dequeue
+    last_element_index = @elements.size - 1
+    @elements.sort!
+    @elements.delete_at(last_element_index)
+  end
 
-	def peek
-		@elements[-1]
-	end
+  def peek
+    @elements[-1]
+  end
 
-	def length
-		@elements.size
-	end
+  def length
+    @elements.size
+  end
 end
 
 q = PriorityQueue.new
