@@ -8,24 +8,79 @@
 # implement a PriorityQueue, validate using MiniTest unit tests
 
 class PriorityQueue
+
   def initialize
-    # your implementation here
+      @low = Array.new
+      @medium = Array.new
+      @high = Array.new
   end
-  def enqueue(item, priority=:medium)
-    # your implementation here
-  end
-  def dequeue
-    # your implementation here
-  end
+
   def empty?
-    # your implementation here
+     @low.empty? && @medium.empty? && @high.empty?
   end
+
+  def enqueue(item, priority=:medium)
+    if priority ==:high
+      @high << item
+    elsif priority == :medium
+      @medium << item
+    else
+      @low << item
+    end
+  end
+
+  def dequeue
+    if @high.empty?
+      if @medium.empty?
+        if @low.empty?
+          nil
+        else
+        @low.pop
+        end
+      else
+      @medium.pop
+      end
+    else
+    @high.pop
+    end
+  end
+
   def peek
-    # your implementation here
+    @nodes.nil? ? nil : @nodes.item
   end
+
   def length
-    # your implementation here
+    @low.length + @medium.length + @high.length
   end
+
+end
+
+
+require 'minitest/autorun'
+
+class TestPriorityQueue < Minitest::Unit::TestCase
+  def setup
+    pq = PriorityQueue.new
+  end
+  def test_01
+    assert pq.empty?
+  end
+  def test_02
+    pq.enqueue "first"
+    assert pq.empty?
+    pq.enqueue "top", :high
+    pq.enqueue "last", :low
+    pq.enqueue "second"
+    pq.enqueue "another top", :high
+  end
+  def test_03
+    assert pq.legnth == 5
+    pq.dequeue
+    pq.dequeue
+    pq.dequeue
+    pq.dequeue
+  end
+
 end
 
 # expected results:
