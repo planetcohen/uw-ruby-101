@@ -100,7 +100,31 @@ class Recipe
   end
   
   def render_dsl
-    # your code here
+    # refactor for heredocs and blocks
+    str_output = "recipe \"" + @name + "\" do\n"
+    if @category != nil
+      str_output += "  category \"" + @category + "\"\n"
+    end
+    if @prep_time != nil
+      str_output += "  prep_time \"" + @prep_time + "\"\n"
+    end
+    if @rating != nil
+      str_output += "  rating " + @rating.to_s + "\n"
+    end
+    if @ingredients.length > 0
+        str_output += "  ingredients do\n"
+        str_temp = []
+        str_temp << @ingredients.map {|ingredient| "x \"" +  ingredient}
+        str_output += str_temp.join "\n"
+        str_output += "\n  end\n"
+    end
+    if @steps.length > 0
+        str_output += "  steps do\n"
+        str_temp << @steps.map {|step| "x \"" +  step}
+        str_output += str_temp.join "\n"
+        str_output += "\n  end\n"
+    end
+    str_output += "end\n"
   end
 end
 
