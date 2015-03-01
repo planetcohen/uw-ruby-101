@@ -75,7 +75,7 @@ end
 
 ---
 
-# Lecture 2
+# Lecture 3
 
 1. Methods & Blocks
 1. Classes & Objects
