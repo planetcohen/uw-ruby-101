@@ -11,15 +11,31 @@
 module Assignment08
   class RomanNumeral
     def initialize(i)
-      # your implementation here
+      @rn_int = i
+      @rn_str = self.to_s
+      @ones = ["", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"]
+      @tens = ["", "X", "XX", "XXX", "LX", "L", "LX", "LXX", "LXXX", "XC"]
+      @hundreds = ["", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"]
+      @thousands = ["", "M", "MM", "MMM"]
     end
 
     def to_s
-      # your implementation here
+      if @rn_int > 3999
+        "Number est etiam magna."
+      elsif @rn_int < 1
+        "Number nimis parvum est."
+      else
+        digit_string = @rn_int.to_s
+        while digit_string.length < 4
+          digit_string = "0" + digit_string
+        end
+        digits = digit_string.map {|str_digit| digit.to_i}
+        @thousands[digits[0]] + @hundreds[digits[1]] + @tens[digits[2]] + @ones[digits[3]]
+      end
     end
 
     def to_i
-      # your implementation here
+      @rn_int
     end
     
     # bonus: create from Roman Numeral
@@ -27,8 +43,9 @@ module Assignment08
       # your implementation here
       # returns a new instance
     end
-  end
-end
+
+  end  # class RomanNumeral
+end  # module Assignment08
 
 # expected results:
 RomanNumeral.new(1).to_s   # => 'I'
