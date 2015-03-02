@@ -1,5 +1,5 @@
 
-
+module Assignment08
   class RomanNumeral
     attr  :value, :arabic_digits
     def initialize(i)
@@ -39,24 +39,25 @@
     end
   end
 
-
-#require 'Assignment08'
+#require Assignment08
 
 require 'minitest/autorun'
 
-class RomanNumeralTest < MiniTest::Test
-  def test_one
-    assert_equal 'I', RomanNumeral.new(1).to_s
-    assert_equal 'II', RomanNumeral.new(2).to_s
-    assert_equal 'III', RomanNumeral.new(3).to_s
-    assert_equal 'IV', RomanNumeral.new(4).to_s
-    assert_equal 'V', RomanNumeral.new(5).to_s
-    assert_equal 'VI', RomanNumeral.new(6).to_s
-    assert_equal 'VII', RomanNumeral.new(7).to_s
-    assert_equal 'IX', RomanNumeral.new(9).to_s
-    assert_equal 'X', RomanNumeral.new(10).to_s
-    assert_equal 'XIX', RomanNumeral.new(19).to_s
-    assert_equal 'XXXII', RomanNumeral.new(32).to_s
-    assert_equal 'LI', RomanNumeral.new(51).to_s
+  class RomanNumeralTest < MiniTest::Test
+    def test_one
+      assert_equal 'I', RomanNumeral.new(1).to_s
+      assert_equal 'II', RomanNumeral.new(2).to_s
+      assert_equal 'III', RomanNumeral.new(3).to_s
+      assert_equal 'IV', RomanNumeral.new(4).to_s
+      assert_equal 'V', RomanNumeral.new(5).to_s
+      assert_equal 'VI', RomanNumeral.new(6).to_s
+      assert_equal 'VII', RomanNumeral.new(7).to_s
+      assert_equal 'IX', RomanNumeral.new(9).to_s
+      assert_equal 'X', RomanNumeral.new(10).to_s
+      assert_equal 'XIX', RomanNumeral.new(19).to_s
+      assert_equal 'XXXII', RomanNumeral.new(32).to_s
+      assert_equal 'LI', RomanNumeral.new(51).to_s
+    end
   end
 end
+
