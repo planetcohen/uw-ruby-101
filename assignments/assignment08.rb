@@ -39,16 +39,15 @@ module Assignment08
     end
 
     def to_i
+      @value
     end
     
     # bonus: create from Roman Numeral
     def self.from_string
-      # your implementation here
       # returns a new instance
+      rn == 'III' ? @value = 3 : @value = nil #MOREMORE method in process
     end
   end
-
-#require Assignment08
 
 require 'minitest/autorun'
 
@@ -61,7 +60,7 @@ require 'minitest/autorun'
       assert_equal 'V', RomanNumeral.new(5).to_s
       assert_equal 'VI', RomanNumeral.new(6).to_s
       assert_equal 'VII', RomanNumeral.new(7).to_s
-      assert_equal 'IV', RomanNumeral.new(9).to_s
+      assert_equal 'IX', RomanNumeral.new(9).to_s
       assert_equal 'X', RomanNumeral.new(10).to_s
       assert_equal 'XIX', RomanNumeral.new(19).to_s
       assert_equal 'XXXII', RomanNumeral.new(32).to_s
@@ -88,27 +87,27 @@ end
 # calculate the golden ratio up to specified precision
 # validate using MiniTest unit tests
 
-module Assignment08  
-  def golden_ratio(precision)
-    fib1= 61305790721611591 #fib(82)
-    fib2=37889062373143906 #fib(81)
-    (fib1.to_f/fib2.to_f).round(precision)
+module Assignment08 
+  class GoldenRatioContainer
+    def golden_ratio(precision)
+      fib1= 61305790721611591 #fib(82) (a large fibonacci number)
+      fib2=37889062373143906 #fib(81) (another large fibonacci number)
+      (fib1.to_f/fib2.to_f).round(precision)
+    end
   end
 
-#require 'Assignment08'
   require 'minitest/autorun'
 
   class GoldenRatioTest < MiniTest::Test
+    def setup
+      @my_gr = GoldenRatioContainer.new
+    end
+    
     def test_one
-      assert_equal 1.62, golden_ratio(2)
-      assert_equal 1.61803, golden_ratio(5)
-      assert_equal 1.61803399, golden_ratio(8)
+      assert_equal 1.62, @my_gr.golden_ratio(2)
+      assert_equal 1.61803, @my_gr.golden_ratio(5)
+      assert_equal 1.61803399, @my_gr.golden_ratio(8)
     end
   end
 end
 
-
-# expected results:
-golden_ratio(2)  # => 1.62
-golden_ratio(5)  # => 1.61803
-golden_ratio(8)  # => 1.61803399

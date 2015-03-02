@@ -1,4 +1,5 @@
 
+
 module Assignment08
   class RomanNumeral
     attr  :value, :arabic_digits
@@ -30,18 +31,24 @@ module Assignment08
     end
 
     def to_i
+      @value
     end
     
     # bonus: create from Roman Numeral
-    def self.from_string
-      # your implementation here
+    def self.from_string(rn)
       # returns a new instance
+      rn == 'III' ? @value = 3 : @value = nil #MOREMORE method in process
     end
   end
+  
+# bonus:
+#RomanNumeral.from_string('III').to_i  # => 3
+#RomanNumeral.from_string('IX').to_i   # => 9
+#RomanNumeral.from_string('IX').to_i   # => 9
 
 #require Assignment08
 
-require 'minitest/autorun'
+  require 'minitest/autorun'
 
   class RomanNumeralTest < MiniTest::Test
     def test_one
@@ -57,6 +64,8 @@ require 'minitest/autorun'
       assert_equal 'XIX', RomanNumeral.new(19).to_s
       assert_equal 'XXXII', RomanNumeral.new(32).to_s
       assert_equal 'LI', RomanNumeral.new(51).to_s
+      assert_equal 'C', RomanNumeral.new(100).to_s
+      assert_equal 'CI', RomanNumeral.new(101).to_s
     end
   end
 end
