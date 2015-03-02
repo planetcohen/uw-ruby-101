@@ -1,49 +1,43 @@
 
 
-class RomanNumeral
-  attr :roman_ones, :value, :arabic_digits, :arabic_ones_digit, :arabic_tens_digit, :arabic_100s_digit
-  def initialize(i)
-    @value = i
-    @arabic_ones_digit = @value.to_s[-1].to_i
-    @arabic_tens_digit = @value.to_s[-2].to_i
-    @arabic_100s_digit = @value.to_s[-3].to_i
-    @arabic_digits = []
-    [1,2,3].each {|n| @arabic_digits[n-1] = @value.to_s[n *-1].to_i}
-  end
-
-  def to_s
-    roman_chars = []
-    roman_chars << %w{I IV V IX}
-    roman_chars << %w{X XL L XC}
-    roman_chars << %w{C CD D CM}
-    r_numeral = ""
-    r_dig = ""
-    @arabic_digits.each_with_index do |arabic_digit, i|
-      arabic_digit ? true : arabic_digit = 0 
-      if arabic_digit <= 3 then
-        r_dig = roman_chars[i][0] * arabic_digit
-      elsif arabic_digit == 4 then
-        r_dig = roman_chars[i][1]
-      elsif arabic_digit <= 8 then
-        r_dig = roman_chars[i][2] + roman_chars[i][0] * (arabic_digit - 5)
-      else r_dig = roman_chars[i][3]
-      end
-      r_numeral.insert(0, r_dig)
+  class RomanNumeral
+    attr  :value, :arabic_digits
+    def initialize(i)
+      @value = i
+      @arabic_digits = []
+      [0,1,2].each {|n| @arabic_digits[n] = @value.to_s[(n+1) *-1].to_i}
     end
-    r_numeral
-  end
 
-  def to_i
+    def to_s
+      roman_chars = []
+      roman_chars << %w{I IV V IX}
+      roman_chars << %w{X XL L XC}
+      roman_chars << %w{C CD D CM}
+      r_numeral = ""
+      r_digit = ""
+      @arabic_digits.each_with_index do |arabic_digit, i|
+        if arabic_digit <= 3 then
+          r_digit = roman_chars[i][0] * arabic_digit
+        elsif arabic_digit == 4 then
+          r_digit = roman_chars[i][1]
+        elsif arabic_digit <= 8 then
+          r_digit = roman_chars[i][2] + roman_chars[i][0] * (arabic_digit - 5)
+        else r_digit = roman_chars[i][3]
+        end
+        r_numeral.insert(0, r_digit)
+      end
+      r_numeral
+    end
+
+    def to_i
+    end
+    
+    # bonus: create from Roman Numeral
+    def self.from_string
+      # your implementation here
+      # returns a new instance
+    end
   end
-  
-  # bonus: create from Roman Numeral
-  def self.from_string
-    # your implementation here
-    # returns a new instance
-  end
-end
-rn  = RomanNumeral.new(13)
-rn.to_s
 
 
 #require 'Assignment08'

@@ -10,52 +10,32 @@
 
 module Assignment08
   class RomanNumeral
-    attr :roman_ones, :value, :arabic_ones_digit, :arabic_tens_digit, :arabic_100s_digit
+    attr  :value, :arabic_digits
     def initialize(i)
       @value = i
-      @arabic_ones_digit = @value.to_s[-1].to_i
-      @arabic_tens_digit = @value.to_s[-2].to_i
-      @arabic_100s_digit = @value.to_s[-3].to_i
-    end
-
-    def ones_digit
-      if @arabic_ones_digit <= 3 then
-        'I' * @arabic_ones_digit
-      elsif @arabic_ones_digit == 4 then
-        'IV'
-      elsif @arabic_ones_digit <= 8 then
-        'V' + 'I' * (@arabic_ones_digit - 5)
-      else 'IX'
-      end
-    end
-
-    def tens_digit
-      if @arabic_tens_digit <= 3 then
-        'X' * @arabic_tens_digit
-      elsif @arabic_tens_digit == 4
-        'XL'
-      elsif @arabic_tens_digit <= 8
-        'L' + 'X' * (arabic_tens_digit - 5)
-      else 'XC'
-      end
-    end
-
-    def hundreds_digit
-      if @arabic_100s_digit <= 3 then
-        'C' * @arabic_100s_digit
-      elsif @arabic_100s_digit == 4
-        'CD'
-      elsif @arabic_100s_digit <= 8
-        'D' + 'M' * (@arabic_100s_digit - 5)
-      else 'CM'
-      end
+      @arabic_digits = []
+      [0,1,2].each {|n| @arabic_digits[n] = @value.to_s[(n+1) *-1].to_i}
     end
 
     def to_s
-      @roman_ones = ones_digit
-      @roman_tens = tens_digit
-      @roman_100s = hundreds_digit
-      @roman_100s + @roman_tens + @roman_ones 
+      roman_chars = []
+      roman_chars << %w{I IV V IX}
+      roman_chars << %w{X XL L XC}
+      roman_chars << %w{C CD D CM}
+      r_numeral = ""
+      r_digit = ""
+      @arabic_digits.each_with_index do |arabic_digit, i|
+        if arabic_digit <= 3 then
+          r_digit = roman_chars[i][0] * arabic_digit
+        elsif arabic_digit == 4 then
+          r_digit = roman_chars[i][1]
+        elsif arabic_digit <= 8 then
+          r_digit = roman_chars[i][2] + roman_chars[i][0] * (arabic_digit - 5)
+        else r_digit = roman_chars[i][3]
+        end
+        r_numeral.insert(0, r_digit)
+      end
+      r_numeral
     end
 
     def to_i
