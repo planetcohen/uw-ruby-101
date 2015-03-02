@@ -65,6 +65,8 @@ require 'minitest/autorun'
       assert_equal 'XIX', RomanNumeral.new(19).to_s
       assert_equal 'XXXII', RomanNumeral.new(32).to_s
       assert_equal 'LI', RomanNumeral.new(51).to_s
+      assert_equal 'DCC', RomanNumeral.new(700).to_s
+      assert_equal 'CMXII', RomanNumeral.new(912).to_s
     end
   end
 end
