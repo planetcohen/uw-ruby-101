@@ -7,8 +7,8 @@ class RomanNumeral
     @arabic_ones_digit = @value.to_s[-1].to_i
     @arabic_tens_digit = @value.to_s[-2].to_i
     @arabic_100s_digit = @value.to_s[-3].to_i
-    @arabic_digits = {}
-    [1,2,3].each {|n| @arabic_digits[n] = @value.to_s[n *-1].to_i}
+    @arabic_digits = []
+    [1,2,3].each {|n| @arabic_digits[n-1] = @value.to_s[n *-1].to_i}
   end
 
   def to_s
@@ -18,14 +18,15 @@ class RomanNumeral
     roman_chars << %w{C CD D CM}
     r_numeral = ""
     r_dig = ""
-    @arabic_digits.keys.each do |k|
-      if @arabic_digits[k] <= 3 then
-        r_dig = roman_chars[k-1][0] * @arabic_digits[k]
-      elsif @arabic_digits[k] == 4 then
-        r_dig = roman_chars[k-1][1]
-      elsif @arabic_digits[k] <= 8 then
-        r_dig = roman_chars[k-1][2] + roman_chars[k-1][0] * (@arabic_digits[k] - 5)
-      else r_dig = roman_chars[k-1][3]
+    @arabic_digits.each_with_index do |arabic_digit, i|
+      arabic_digit ? true : arabic_digit = 0 
+      if arabic_digit <= 3 then
+        r_dig = roman_chars[i][0] * arabic_digit
+      elsif arabic_digit == 4 then
+        r_dig = roman_chars[i][1]
+      elsif arabic_digit <= 8 then
+        r_dig = roman_chars[i][2] + roman_chars[i][0] * (arabic_digit - 5)
+      else r_dig = roman_chars[i][3]
       end
       r_numeral.insert(0, r_dig)
     end
@@ -41,6 +42,8 @@ class RomanNumeral
     # returns a new instance
   end
 end
+rn  = RomanNumeral.new(13)
+rn.to_s
 
 
 #require 'Assignment08'
