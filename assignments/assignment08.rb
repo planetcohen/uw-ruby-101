@@ -11,23 +11,98 @@
 module Assignment08
   class RomanNumeral
     def initialize(i)
-      # your implementation here
+      @greek = i.to_i
+      @roman = nil
+      @roman1 = %w(I X C M)
+      @roman5 = %w(V L D)
+    end
+
+    def digits n
+      #Some code I found for converting to digits a little faster than
+      #going through strings
+      n= n.abs
+      [].tap do |result|
+        while n > 0
+          n,digit = n.divmod 10
+          result.unshift digit
+        end
+      end
     end
 
     def to_s
-      # your implementation here
+      result = digits(@greek).reverse.map.with_index do |g, i|
+        if g == 0
+          nil
+        elsif g <= 3
+          @roman1[i] * g
+        elsif g == 4
+          @roman1[i] + @roman5[i]
+        elsif g <= 8
+          @roman5[i] + @roman1[i]*(g-5)
+        else
+          @roman1[i] + @roman1[i+1]
+        end
+      end
+      @roman = result.reverse.join
     end
 
     def to_i
-      # your implementation here
+      tens = @roman1
+      last_ten = tens.pop
+      #roman =~ /#{roman1[c]}/ || @roman =~ /#{@roman5[c]}/
+      result = tens.map.with_index do |c, i|
+        if @roman =~ /#{@roman1[i]}#{@roman1[i+1]}/
+          9
+        elsif @roman =~ /#{@roman1[i]}#{@roman5[i]}/
+          4
+        elsif @roman =~ /#{@roman5[i]}/
+          5 + @roman[/#{@roman1[i]}*/].length
+        elsif @roman =~ /#{@roman1[i]}/
+          @roman[/#{@roman1[i]}*/].length
+        else
+          0
+        end
+      end
+      if @roman =~ /#{last_ten}+/
+        result << @roman[/#{last_ten}+/].length
+      end
+      result.reverse.join.to_i
     end
-    
+
     # bonus: create from Roman Numeral
     def self.from_string
       # your implementation here
       # returns a new instance
     end
   end
+
+
+
+  require 'minitest/autorun'
+
+  class Test1 < Minitest::Test
+    def setup
+      r1 = RomanNumeral.new 1
+      @tc = Thermometer_Control.new @t1
+      @td = Thermometer_Display.new @t1
+      @md = Mercury_Display.new @t1
+    end
+
+    def test_render_output
+      # @tc.click_up
+      assert_output (/26/) { @tc.click_up}
+      assert_output (/[XXX       ]/) { @tc.click_up}
+      assert_output (/26/) { @tc.click_down}
+      assert_output (/[XX        ]/) { 2.times {@tc.click_down}}  #24
+
+      assert_output (/124/) { 100.times {@tc.click_up}}
+      assert_output (/[XXXXXXXXXX]/) { 1.times {@tc.click_down}} #123
+
+      assert_output (/-1/) { 124.times {@tc.click_down}}
+      assert_output (/[          ]/) { 1.times {@tc.click_down}} #-125
+    end
+  end
+
 end
 
 # expected results:
