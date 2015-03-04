@@ -56,9 +56,13 @@ module Assignment08
         elsif @roman =~ /#{@roman1[i]}#{@roman5[i]}/
           4
         elsif @roman =~ /#{@roman5[i]}/
-          5 + @roman[/#{@roman1[i]}*/].length
+          if @roman =~ /#{@roman1[i]}/
+            5 + @roman[/#{@roman1[i]}+/].length
+          else
+            5
+          end
         elsif @roman =~ /#{@roman1[i]}/
-          @roman[/#{@roman1[i]}*/].length
+            @roman[/#{@roman1[i]}+/].length
         else
           0
         end
@@ -76,30 +80,60 @@ module Assignment08
     end
   end
 
+  def write_to_file(title, &block)
+    File.open(title, "w+") do |output|
+      output.write block.call
+    end
+  end
+
+  def calc_test_sequence(test_greek)
+    write_to_file "calc_test_sequence.txt" do
+      test_out = test_greek.map do |g|
+        <<-NUM
+        #{(RomanNumeral.new g).to_s}
+        NUM
+      end
+      test_out.join
+    end
+  end
 
 
   require 'minitest/autorun'
 
-  class Test1 < Minitest::Test
-    def setup
-      r1 = RomanNumeral.new 1
-      @tc = Thermometer_Control.new @t1
-      @td = Thermometer_Display.new @t1
-      @md = Mercury_Display.new @t1
+  class TestRoman < Minitest::Test
+    def write_to_file(title, &block)
+      File.open(title, "w+") do |output|
+        output.write block.call
+      end
     end
 
-    def test_render_output
-      # @tc.click_up
-      assert_output (/26/) { @tc.click_up}
-      assert_output (/[XXX       ]/) { @tc.click_up}
-      assert_output (/26/) { @tc.click_down}
-      assert_output (/[XX        ]/) { 2.times {@tc.click_down}}  #24
+    def calc_test_sequence(title, test_greek)
+      write_to_file title do
+        test_out = test_greek.map do |g|
+          <<-NUM
+#{(RomanNumeral.new g).to_s}
+          NUM
+        end
+        test_out.join
+      end
+    end
 
-      assert_output (/124/) { 100.times {@tc.click_up}}
-      assert_output (/[XXXXXXXXXX]/) { 1.times {@tc.click_down}} #123
+    def test_greek_to_roman
+      #Makes a text file with roman numerals.
+      test_greek = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,30,40,50,60,100,499,500,999,1000,1500,3299]
+      out_title = "calc_test_sequence.txt"
+      calc_test_sequence out_title, test_greek
 
-      assert_output (/-1/) { 124.times {@tc.click_down}}
-      assert_output (/[          ]/) { 1.times {@tc.click_down}} #-125
+      File.open(out_title) do |input|
+        test_roman = input.readlines
+
+        test_greek.map.with_index do |g, i|
+          assert_equal (RomanNumeral.new g).to_s, test_roman[i].chomp
+          #temp = RomanNumeral.new g
+          #temp.to_s
+          #assert_equal g, temp.to_i
+        end
+      end
     end
   end
 
@@ -136,12 +170,49 @@ n == RomanNumeral.from_string(RomanNumeral.new(n).to_s).to_i
 # validate using MiniTest unit tests
 
 module Assignment08
-  def golden_ratio(precision)
-    # your implementation here
+  def golden_ratio(precision, n=3, cache=[1.0,1.0,2.0])
+    def fib(n, cache)
+      if cache.length >= n
+        cache[n-1]
+      else
+        fib(n-2, cache) + fib(n-1, cache)
+      end
+    end
+
+    if cache.length < n
+      cache[n-1] = fib(n, cache)
+    end
+
+    ratio_last = cache[cache.length-1] / cache[cache.length - 2]
+    ratio_pen = cache[cache.length - 2] / cache[cache.length - 3]
+
+    if ratio_last.round(precision) == ratio_pen.round(precision)
+      ratio_last.round(precision)
+    else
+      golden_ratio(precision, n+1, cache)
+    end
+  end
+
+  # puts golden_ratio(15)
+
+  require 'minitest/autorun'
+
+  class TestRatio < Minitest::Test
+    def test_cases
+      gr = (1.0 + 5.0**0.5)/2.0
+
+      test_cases = []
+      val = 1
+      until val > 15
+        test_cases << val
+        val += 1
+      end
+      test_cases.each { |tc| assert_equal gr.round(tc), golden_ratio(tc)}
+    end
   end
 end
 
-# expected results:
-golden_ratio(2)  # => 1.62
-golden_ratio(5)  # => 1.61803
-golden_ratio(8)  # => 1.61803399
+# # expected results:
+# golden_ratio(2)  # => 1.62
+# golden_ratio(5)  # => 1.61803
+# golden_ratio(8)  # => 1.61803399
