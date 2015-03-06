@@ -48,6 +48,10 @@ require 'tk'
 #  You choose how you want to render the current state of the board.
 #  ASCII? HTML? Something else?
 
+# Rendering employs a rendering strategy which is determined at the time a game is created.
+# There are two rendering strategy implementations: ConsoleRenderStrategy, which outputs the state
+# of the game to the console as a sequence of ASCII characters, and TkRenderStrategy, which draws
+# the state of the game to a Tk Canvas.
 
 #  ---------------------------------------------------------------------------------------
 #  Bonus: DSL
@@ -56,6 +60,16 @@ require 'tk'
 #  - Your render method can then be formatted as the DSL, so that you can round-trip
 #    between the textual DSL representation and the running instance.
 
+# The game DSL has the following representation:
+# gol 2, rendering_strategy, "
+# .*
+# *.
+# "
+#
+# The first argument is the size of the board.
+# The second argument is a rendering strategy.
+# The third argument is a Ruby multiline string. Each row represents a row of the board. '*' represents a live cell,
+# whereas '.' represents a dead cell.
 
 #  ---------------------------------------------------------------------------------------
 #  Suggested Implementation
@@ -74,6 +88,7 @@ module FinalProject
       @alive = false
     end
 
+    # returns all neighboring cells
     def neighbors
       cells = []
 
@@ -87,6 +102,7 @@ module FinalProject
       cells
     end
 
+    # returns all live neighboring cells
     def live_neighbors
       neighbors.find_all { |cell| cell.alive? }
     end
@@ -116,6 +132,7 @@ module FinalProject
     end
 
     def cell_at(row, col)
+      # allow wrapping in either direction
       row += @size if row < 0
       col += @size if col < 0
 
@@ -132,11 +149,15 @@ module FinalProject
   end
 
   class GameOfLife
-    def initialize(size, render_strategy)
+    def initialize(size, render_strategy, board = nil)
       @render_strategy = render_strategy
-      @board = Board.new(size)
-      # randomly initialize the board
-      @board.each { |cell| cell.alive = [true, false].sample }
+      if board.nil?
+        @board = Board.new(size)
+        # randomly initialize the board
+        @board.each { |cell| cell.alive = [true, false].sample }
+      else
+        @board = board
+      end
     end
 
     def evolve
@@ -216,6 +237,34 @@ module FinalProject
   end
 end
 
+# game DSL
+
+module FinalProject
+  class GameOfLifeBuilder
+    def initialize(size, render_strategy)
+      @size = size
+      @render_strategy = render_strategy
+      @board = Board.new(size)
+    end
+
+    def build(board_string)
+      rows = board_string.split
+      rows.each_with_index do |row_string, row|
+        row_string.chars.each_with_index do |col_string, col|
+          @board.cell_at(row, col).alive = true if col_string == '*'
+          @board.cell_at(row, col).alive = false if col_string == '.'
+        end
+      end
+      GameOfLife.new(@size, @render_strategy, @board)
+    end
+  end
+end
+
+def gol(size, render_strategy, board_string)
+  builder = FinalProject::GameOfLifeBuilder.new(size, render_strategy)
+  builder.build(board_string)
+end
+
 # unit tests
 
 module FinalProject
@@ -283,6 +332,43 @@ module FinalProject
       assert_equal "**\n*.", @board.to_s
       @cells[3].alive = true
       assert_equal "**\n**", @board.to_s
+    end
+  end
+
+  class GameDSLTest < Minitest::Test
+    class MyRenderStrategy
+      attr_reader :rendered_value
+
+      def render(board)
+        @rendered_value = board.to_s
+      end
+    end
+
+    def setup
+      @render_strategy = MyRenderStrategy.new
+    end
+
+    def test_two_by_two_game_dsl
+      game = gol 2, @render_strategy, '
+      .*
+      *.
+      '
+
+      game.render
+      assert_equal ".*\n*.", @render_strategy.rendered_value
+    end
+
+    def test_five_by_five_game_dsl
+      game = gol 5, @render_strategy, '
+      .***.
+      *...*
+      *...*
+      *...*
+      .***.
+      '
+
+      game.render
+      assert_equal ".***.\n*...*\n*...*\n*...*\n.***.", @render_strategy.rendered_value
     end
   end
 end
