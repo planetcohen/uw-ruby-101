@@ -247,6 +247,8 @@ require 'minitest/autorun'
 
 class GameOfLifeTest < Minitest::Test
 
+  include FinalProject
+
   def setup
     @world = GameOfLife.new(100,100)
   end
