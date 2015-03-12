@@ -1,5 +1,5 @@
 # ========================================================================================
-# Assignment 5
+# Assignment 6
 # ========================================================================================
 
 # ========================================================================================
@@ -7,8 +7,7 @@
 
 # implement a PriorityQueue, validate using MiniTest unit tests
 
-# expected results:
-module Assignment_6_PQ
+module Assignment06
   class PriorityQueue
     def initialize
       @items = []
@@ -117,12 +116,11 @@ module Assignment_6_PQ
       assert_equal r, 0
     end
   end
-end
+
 # ========================================================================================
 #  Problem 2 - Recipe to DSL
 
 # render a Recipe object to Recipe DSL
-module Assignment_6_Recipe
   class Recipe
     attr_accessor :steps, :ingredients, :name, :category, :prep_time, :rating
     def initialize(name)
@@ -132,9 +130,10 @@ module Assignment_6_Recipe
     def render_ingredients
       <<-INGREDIENTS
         ingredients do
-          #{ingredients.map {|i| "x \"#{x}\""}}.join "\n"}
+          #{ingredients.map {|i| "x \"#{i}\""}}.join "\n"}
         end
       INGREDIENTS
+    end
 
     def render_steps
       <<-STEPS
@@ -142,16 +141,17 @@ module Assignment_6_Recipe
           #{steps.map {|s| "x \"#{s}\""}}.join "\n"}
         end
       STEPS
+    end
 
     def render_dsl
       <<-RECIPE
-      recipe "#{name}" do
-        category "#{category}"
-        prep_time "#{prep_time}"
-        rating "#{rating}"
-        #{render_ingredients}
-        #{render_steps}
-      end
+        recipe "#{name}" do
+          category "#{category}"
+          prep_time "#{prep_time}"
+          rating "#{rating}"
+          #{render_ingredients}
+          #{render_steps}
+        end
       RECIPE
     end
   end
@@ -195,5 +195,39 @@ module Assignment_6_Recipe
   def recipe(name, &block)
     rb = RecipeBuilder.new
     rb.recipe(name, &block)
+  end
+
+  require 'minitest/autorun'
+
+  class TestRecipe < MiniTest::Test
+    def test_recipe
+      eggs = recipe "Scrambled Eggs" do
+              category "breakfast"
+              prep_time "10 minutes"
+              rating 4
+              ingredients do
+              x "2 eggs"
+              x "1/4 cup of milk"
+              x "1 tbsp of butter"
+              x "dash of salt"
+              x "dash of pepper"
+              end
+              steps do
+              x "crack eggs into medium mixing bowl"
+              x "whisk eggs"
+              x "add milk"
+              x "add salt & pepper to taste"
+              x "heat pan to medium high heat"
+              x "melt butter in pan"
+              x "once hot, add eggs to pan"
+              end
+          end
+      assert_equal eggs.name, "Scrambled Eggs"
+      assert_equal eggs.steps, ["crack eggs into medium mixing bowl", "whisk eggs", "add milk", "add salt & pepper to taste", "heat pan to medium high heat", "melt butter in pan", "once hot, add eggs to pan"]
+      assert_equal eggs.ingredients, ["2 eggs", "1/4 cup of milk", "1 tbsp of butter", "dash of salt", "dash of pepper"]
+      assert_equal eggs.category, "breakfast"
+      assert_equal eggs.prep_time, "10 minutes"
+      assert_equal eggs.rating, 4
+    end
   end
 end
