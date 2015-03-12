@@ -1,0 +1,1 @@
+Array.new(1000).reduce(0) { |tot, i| rand(10)>8 ? tot + 1 : tot }   
