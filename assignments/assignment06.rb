@@ -60,6 +60,33 @@ class PriorityQueue
   end
 end
 
+require 'minitest/autorun'
+
+class PriorityQueueTest < Minitest::Test
+   def initialize
+     pq = PriorityQueue.new
+       assert_instance_of PriorityQueue, pq
+       assert_equal true, pq.empty?
+     pq.enqueue "first"
+       assert_equal "first", pq.peek
+       assert_equal false, pq.empty?
+     pq.enqueue "top", :high
+       assert_equal "top", pq.peek
+     pq.enqueue "last", :low
+       assert_equal "top", pq.peek
+     pq.enqueue "second"
+       assert_equal "top", pq.peek
+     pq.enqueue "another top", :high
+       assert_equal "top", pq.peek
+       assert_equal 5, pq.length
+       assert_equal "top", pq.dequeue
+       assert_equal "another top", pq.dequeue
+       assert_equal "first", pq.dequeue
+       assert_equal "second", pq.dequeue
+       assert_equal "last", pq.dequeue
+   end
+end
+
 # expected results:
 pq = PriorityQueue.new
 pq.empty?      #=> true
@@ -94,6 +121,12 @@ class Recipe
 
   def render_dsl
     # your code here
+    <<-DSLOUTPUT
+      Current Recipe: #{name}
+          Rating: #{rating}
+          Category: #{category}
+          Prep Time: #{prep_time} Minutes
+    DSLOUTPUT
   end
 end
 
