@@ -118,7 +118,19 @@ module FinalProject
       i>=(array_length-1) ? out_array = [i-1, i, -1] : out_array = [i-1, i, i+1]
       out_array
     end
-    
+ 
+    def reseed_glider_gun
+      gun_cells=[[1,25],[2,23],[2,25],
+        [3,13],[3,14],[3,21],[3,22],[3,35],[3,36],
+        [4,12], [4,16],[4,21],[4,22],[4,35],[4,36],
+        [5,1],[5,2],[5,11],[5,17],[5,21],[5,22],
+        [6,1],[6,2],[6,11],[6,15],[6,17],[6,18],[6,23],[6,25],
+        [7,11],[7,17],[7,25],
+        [8,12],[8,16],
+        [9,13],[9,14]
+        ]
+      reseed(gun_cells)
+    end
 
     def count_neighbors(x,y)
       # count the number of neighbors for a given live cell, not counting the cell itself as a neighbor.
@@ -132,6 +144,7 @@ module FinalProject
       end
       neighbor_count
     end  
+    
     
     def evolve
       # apply rules to each cell and generate new state
@@ -216,6 +229,14 @@ module FinalProject
       assert_equal 220, dead_count
     end
     
+    def test_count_neighbors
+      g=GameOfLife.new(10,0.1)
+      g.reseed_glider
+      assert_equal 5, g.count_neighbors(1,2)
+      assert_equal 1, g.count_neighbors(2,1)
+      assert_equal 3, g.count_neighbors(2,2)
+      assert_equal 0, g.count_neighbors(8,8)
+    end
     
   end
   
