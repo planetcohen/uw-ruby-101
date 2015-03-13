@@ -57,8 +57,6 @@
 #  ---------------------------------------------------------------------------------------
 #  Suggested Implementation
 
-#require 'matrix'
-#require 'set'
 
 module FinalProject
   class GameOfLife
@@ -82,7 +80,6 @@ module FinalProject
                 @previous_grid[x][y].state = @current_grid[x][y].state
             end
         end
-
         
         #live_nb_debug = String.new
         0.upto(rows-1) do |x|
@@ -135,13 +132,14 @@ module FinalProject
       
       #initial run
       render
+      sleep 0.1
       
        1.upto(num_generations) do |i|
-        system "clear"    #clear terminal window for "animation" each iteration
-        puts "*#{i}*"
-        evolve
-        render
-        sleep 0.1
+            system "clear"    #clear terminal window for "animation" each iteration
+            #puts "*#{i}*"
+            evolve
+            render
+            sleep 0.1
         end
     end
   end
@@ -177,6 +175,21 @@ module FinalProject
         end
     end
        
-    newGame = GameOfLife.new(10, 10)
-    newGame.run(200)
+    #newGame = GameOfLife.new(5, 5)
+    #newGame.run(50)
 end
+
+require 'minitest/autorun'
+
+class GameOfLifeTest < Minitest::Test
+    def initialize
+        newGame = GameOfLife.new(10,10)
+        
+        assert_instance_of GameOfLife, newGame
+        
+        assert_equal true, newGame.respond_to?(:evolve)
+        assert_equal true, newGame.respond_to?(:render)
+        assert_equal true, newGame.respond_to?(:run)
+    end
+ end   
+#I realize this testing is very limited at the moment
