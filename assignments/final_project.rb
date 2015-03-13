@@ -154,13 +154,6 @@ module FinalProject
   end  # class GameOfLife
 end  # module FinalProject
 
-game = FinalProject::GameOfLife.new 10
-game.saveBoard("test1.txt")
-game2 = FinalProject::GameOfLife.new 10
-game2.loadBoard("test1.txt")
-
-puts "true" if game.boardArray == game2.boardArray
-
 #  Tests
 require 'minitest/autorun'
 
