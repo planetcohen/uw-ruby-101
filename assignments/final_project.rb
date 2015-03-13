@@ -59,7 +59,7 @@
 
 module FinalProject
   class GameOfLife
-    attr :grid
+    attr :grid, :iteration
     def initialize(size, p)
       # randomly initialize the board
       @grid = Array.new(size)
@@ -79,58 +79,43 @@ module FinalProject
       end
     end
     
-    def reseed_block
-      # reseeds a grid with a 2x2 block of live cells.  assumes a grid size >=3.
+    def reseed(pattern_array)
       @grid.each_with_index do |x,i|
         x.each_with_index do |y,j|
-          if (i==1 and j==1) or (i==1 and j==2) then
-            @grid[i][j]='X'
-          elsif (i==2 and j==1) or (i==2 and j==2) then
-            @grid[i][j] = 'X'
-          else
-            @grid[i][j] = nil
-          end
+          pattern_array.include?([i,j]) ? @grid[i][j]='X' : @grid[i][j]=nil
         end
       end
+    end
+    
+    def reseed_toad
+      # reseeds a grid with a "toad" pattern of live cells.  assumes a grid size >=6.
+      toad_cells = [[1,2],[1,3],[1,4],[2,1],[2,2],[2,3]]
+      reseed(toad_cells)
+    end
+    
+    def reseed_block
+      # reseeds a grid with a 2x2 block of live cells.  assumes a grid size >=3.
+      block_cells = [[1,1],[1,2],[2,1],[2,2]]
+      reseed(block_cells)
     end
   
     def reseed_blinker
       # reseeds a grid with a 3x1 block of live cells.  assumes a grid size >=5.
-      @grid.each_with_index do |x,i|
-        x.each_with_index do |y,j|
-          if (i==2 and j==1) or (i==2 and j==2) or (i==2 and j==3) then
-            @grid[i][j]='X'
-          else
-            @grid[i][j] = nil
-          end
-        end
-      end
+      blinker_cells=[[2,1],[2,2],[2,3]]
+      reseed(blinker_cells)
     end  
     
 
     def reseed_glider
-      # reseeds a grid with a "glider" block of live cells.  assumes a grid size >=15.
-      @grid.each_with_index do |x,i|
-        x.each_with_index do |y,j|
-          if (i==2 and j==1) or (i==2 and j==2) or (i==2 and j==3) then
-            @grid[i][j]='X'
-          elsif (i==1 and j==3) or (i==0 and j==2)then
-            @grid[i][j]='X'
-          else
-            @grid[i][j] = nil
-          end
-        end
-      end
+      # reseeds a grid with a "glider" pattern of live cells.  assumes a grid size >=15.
+      glider_cells = [[2,1],[2,2],[2,3],[1,3],[0,2]]
+      reseed(glider_cells)
     end      
     
     def neighbor_coordinates_array(i)
       out_array = []
       array_length = @grid.length
-      if i >= (array_length - 1) then
-        out_array = [i-1, i, -1]
-      else
-        out_array = [i-1, i, i+1]
-      end
+      i>=(array_length-1) ? out_array = [i-1, i, -1] : out_array = [i-1, i, i+1]
       out_array
     end
     
@@ -142,7 +127,7 @@ module FinalProject
       y_coords = neighbor_coordinates_array(y)
       x_coords.each do |i| 
         y_coords.each do |j|
-          neighbor_count += 1 if @grid[i][j]=='X' and !(i==x and y==j)
+          neighbor_count += 1 if (@grid[i][j] and !(i==x and y==j))
         end
       end
       neighbor_count
@@ -176,9 +161,9 @@ module FinalProject
     def render
       # render the current state of the board
       puts '----' * @grid.length;
-      @grid.each do |col|
+      @grid.each do |row|
         c = []
-        col.each_with_index {|val,i| !val ? c[i]=' ' : c[i]=val }
+        row.each_with_index {|val,i| !val ? c[i]=' ' : c[i]=val }
         puts c.join(' | ')
         puts '----' * @grid.length;
       end
@@ -187,35 +172,48 @@ module FinalProject
     
     def run(num_generations)
       # evolve and render for num_generations
-      puts "generation #{@iteration}:"
-      render
       num_generations.times do 
          evolve
          puts "generation #{@iteration}:"
          render
          2.times {puts ""}
-         sleep(1)
+         sleep(0.5)
       end
     end
   end
   
-  g = GameOfLife.new(5,0.4)
-  g.reseed_blinker
-  g.render
-  g.evolve
-  g.render
-  
-  g.run(5)
+
   
   require 'minitest/autorun'
   class TestFinalProject < MiniTest::Test
     
-    def setup
-      @g = GameOfLife.new(3,0.1)
+    def test_grid_size
+      g=GameOfLife.new(3,0.1)
+      assert_equal 3, g.grid_size
     end
     
-    def test_grid_size
-      assert_equal 3, @g.grid_size
+    def test_generation_counter
+      g=GameOfLife.new(10,0.1)
+      9.times {g.evolve}
+      assert_equal 10, g.iteration
+    end
+    
+    def test_glider 
+      # Seed and evolve a glider formation 4 times,
+      # then count the live cells in the expected locations.
+      g=GameOfLife.new(15,0.1)
+      g.reseed_glider
+      4.times {g.evolve}
+      live_coords=[[1,3],[2,4],[3,2],[3,3],[3,4]]
+      live_count,dead_count=0,0
+      g.grid.each_with_index do |row, i|
+        row.each_with_index do |cell, j|
+          live_count+=1 if (live_coords.include?([i,j]) && cell )
+          dead_count+=1 if (!live_coords.include?([i,j]) && !cell)
+        end
+      end
+      assert_equal 5, live_count
+      assert_equal 220, dead_count
     end
     
     
