@@ -1,0 +1,12 @@
+<html>
+  <head>
+    <title>Delete <%= article.title %>?</title>
+  </head>
+  <body>
+    <h1>Delete '<%= article.title %>'?</h1>
+    <form method="post" action="/articles/<%= article.id %>/delete">
+      <input type="submit" value="Delete article">
+      <a href="/articles/<%= article.id %>">Cancel</a>
+    </form>
+  </body>
+</html>

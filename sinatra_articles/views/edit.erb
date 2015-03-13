@@ -1,0 +1,12 @@
+<html>
+  <head>
+    <title>Edit Article</title>
+  </head>
+  <body>
+    <h1>Edit Article</h1>
+    
+    <form method="post" action="/articles/<%= article.id %>">
+      <%= yield %>
+    </form>
+  </body>
+</html>

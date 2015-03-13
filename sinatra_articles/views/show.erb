@@ -1,0 +1,16 @@
+<html>
+  <head>
+    <title><%= article.title %></title>
+  </head>
+  <body>
+    <a href="/articles">&lt; All Articles</a>
+    <a href="/articles/<%= article.id %>/edit">Edit article</a>
+    <a href="/articles/<%= article.id %>/delete_confirmation">Delete article...</a>
+
+    <h1><%= article.title %></h1>
+    
+    <h2><%= article.abstract %></h2>
+    
+    <p><%= article.body %></p>
+  </body>
+</html>
