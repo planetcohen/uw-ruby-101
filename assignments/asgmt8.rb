@@ -1,12 +1,4 @@
-# ========================================================================================
-# Assignment 8
-# ========================================================================================
 
-# ========================================================================================
-#  Problem 1 - Roman Numerals
-
-# implement conversion between integers and roman numerals
-# validate using MiniTest unit tests
 
 module Assignment08
   class RomanNumeral
@@ -43,13 +35,20 @@ module Assignment08
     end
     
     # bonus: create from Roman Numeral
-    def self.from_string
+    def self.from_string(rn)
       # returns a new instance
       rn == 'III' ? @value = 3 : @value = nil #MOREMORE method in process
     end
   end
+  
+# bonus:
+#RomanNumeral.from_string('III').to_i  # => 3
+#RomanNumeral.from_string('IX').to_i   # => 9
+#RomanNumeral.from_string('IX').to_i   # => 9
 
-require 'minitest/autorun'
+#require Assignment08
+
+  require 'minitest/autorun'
 
   class RomanNumeralTest < MiniTest::Test
     def test_one
@@ -65,50 +64,8 @@ require 'minitest/autorun'
       assert_equal 'XIX', RomanNumeral.new(19).to_s
       assert_equal 'XXXII', RomanNumeral.new(32).to_s
       assert_equal 'LI', RomanNumeral.new(51).to_s
-      assert_equal 'DCC', RomanNumeral.new(700).to_s
-      assert_equal 'CMXII', RomanNumeral.new(912).to_s
-    end
-  end
-end
-
-
-# bonus:
-#RomanNumeral.from_string('III').to_i  # => 3
-#RomanNumeral.from_string('IX').to_i   # => 9
-#RomanNumeral.from_string('IX').to_i   # => 9
-
-# given any arbitrary integer n:
-#n == RomanNumeral.from_string(RomanNumeral.new(n).to_s).to_i
-
-
-
-# ========================================================================================
-#  Problem 2: Golden Ratio
-
-# Golden Ratio is ratio between consecutive Fibonacci numbers
-# calculate the golden ratio up to specified precision
-# validate using MiniTest unit tests
-
-module Assignment08 
-  class GoldenRatioContainer
-    def golden_ratio(precision)
-      fib1= 61305790721611591 #fib(82) (a large fibonacci number)
-      fib2=37889062373143906 #fib(81) (another large fibonacci number)
-      (fib1.to_f/fib2.to_f).round(precision)
-    end
-  end
-
-  require 'minitest/autorun'
-
-  class GoldenRatioTest < MiniTest::Test
-    def setup
-      @my_gr = GoldenRatioContainer.new
-    end
-    
-    def test_one
-      assert_equal 1.62, @my_gr.golden_ratio(2)
-      assert_equal 1.61803, @my_gr.golden_ratio(5)
-      assert_equal 1.61803399, @my_gr.golden_ratio(8)
+      assert_equal 'C', RomanNumeral.new(100).to_s
+      assert_equal 'CI', RomanNumeral.new(101).to_s
     end
   end
 end

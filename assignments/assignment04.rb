@@ -13,6 +13,13 @@
 
 def fib(n)
   # your implementation here
+  if n==0 then
+    1
+  elsif n==1 then
+    1
+  else 
+    fib(n-2) + fib(n-1)
+  end
 end
 
 # expected behavior:
@@ -40,22 +47,22 @@ q.dequeue           #=> nil
 
 class Queue
   def initialize
-    # your implementation here
+    @items = []
   end
   def enqueue(item)
-    # your implementation here
+    @items<<item
   end
   def dequeue
-    # your implementation here
+    @items.shift
   end
   def empty?
-    # your implementation here
+    @items.empty?
   end
   def peek
-    # your implementation here
+    @items[0]
   end
   def length
-    # your implementation here
+    @items.length
   end
 end
 
@@ -88,25 +95,97 @@ ll.length            #=> 2
 ll.each {|x| puts x} #=> prints out "first", "third"
 
 class LinkedList
+ # include Enumerable
+
+  class Node
+    attr :item, :link
+    def initialize(item, link)
+      @item = item
+      @link = link
+    end
+    def item=(something)
+      @item == something
+    end
+  end
+  
   def initialize
-    # your implementation here
+    @nodes = nil
   end
+  
   def empty?
-    # your implementation here
+    @nodes.nil?
   end
+  
   def length
-    # your implementation here
+    count = 0
+    node = @nodes
+    while node
+      count += 1
+      node = node.link
+    end
+    count
   end
+  
   def <<(item)
-    # your implementation here
+    @nodes = Node.new item, @nodes
   end
+  
   def first
-    # your implementation here
+    node = @nodes
+    lastnode = @nodes
+    while node
+      lastnode = node
+      node = node.link
+    end
+    lastnode.item
   end
   def last
-    # your implementation here
+    @nodes.item
   end
+  
   def each(&block)
-    # your implementation here
+    node = @nodes
+    while node
+      yield node.item
+      node = node.link
+    end
+  end
+    
+  def reverse!
+    in_node = @nodes
+    out_nodes = nil
+    while in_node
+      out_nodes = Node.new in_node.item, out_nodes
+      in_node = in_node.link
+    end
+    @nodes = out_nodes
+  end
+  
+  def delete(myitem)
+    newnodes = nil
+    node = @nodes
+    while node
+      if node.item == myitem then
+        node = node.link
+      else
+        newnodes = Node.new node.item, newnodes
+        node = node.link
+      end
+    end
+    @nodes = newnodes
+    self.reverse!
+    myitem
   end
 end
+
+ll = LinkedList.new
+ll << "first"
+ll << "second"
+ll << "third"
+ll << "fourth"
+ll << "fifth"
+ll.length
+ll.delete "third"
+ll.length
+
+ll.each {|x| puts x }

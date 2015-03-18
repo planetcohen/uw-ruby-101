@@ -11,22 +11,63 @@
 module Assignment07
   module Observable
     def add_observer(obj)
-      # your implementation here
+      defined?(@observers)? @observers<<obj : @observers = [obj]
     end
     def delete_observer(obj)
-      # your implementation here
+      @observers.reject!{|i| i == obj}
     end
     def delete_observers
-      # your implementation here
+      @observers = nil
     end
     def changed(new_state=true)
-      # your implementation here
+      @changed = new_state
     end
     def changed?
-      # your implementation here
+      @changed == true
     end
     def notify_observers(*args)
-      # your implementation here
+      @observers.each { |observer| observer.update(*args.join(',')) }
+      @changed = false
     end
   end
 end
+
+
+require 'minitest/autorun'
+
+class TestObservable < MiniTest::Test
+  class Observed
+    include Assignment07::Observable
+    def initialize(value)
+      @myval = value
+    end
+    def increase
+      @myval += 1
+      notify_observers @myval
+    end
+  end
+  
+  class Observer
+    attr :observerval
+    def initialize(observed)
+      observed.add_observer self
+    end
+    def update(value)
+      @observerval = value
+    end
+  end
+  
+  def test_one
+    observed = Observed.new(1)
+    observer = Observer.new(observed)  
+    assert observer
+    assert observed
+    observed.increase
+    assert 2, observer.observerval 
+    observed.increase
+    assert 3, observer.observerval 
+  end
+  
+end
+
+
