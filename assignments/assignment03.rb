@@ -4,37 +4,47 @@
 
 # ========================================================================================
 #  Problem 1 - re-implement titleize, palindrome?
-
 # re-implement titleize and palindrome? as methods on String
 
-"hEllo WORLD".titleize                         #=> "Hello World"
-"gooDbye CRUel wORLD".titleize                 #=> "Goodbye Cruel World"
+class String
+	def titleize
+		word = self.split
+		title=[]
+		word.each do |words|
+			title << words.capitalize
+		end
+		title.join " "
+	end
 
-"abba".palindrome?                             #=> true
-"aBbA".palindrome?                             #=> true
-"abb".palindrome?                              #=> false
-
-"Able was I ere I saw elba".palindrome?        #=> true
-"A man, a plan, a canal, Panama".palindrome?   #=> true
-
+	def palindrome?
+  	inputstring = self.delete(" ").delete(",").downcase
+  	inputstring == inputstring.reverse
+	end
+end
 
 # ========================================================================================
 #  Problem 2 - re-implement mean, median, to_sentence
-
 # re-implement mean, median, to_sentence as methods on Array
+class Array
+	def mean
+  	self.reduce {|item, acc| acc + item} / self.length.to_f
+	end
 
-# Your method should generate the following results:
-[1, 2, 3].mean     #=> 2
-[1, 1, 4].mean     #=> 2
+	def median
+  	middle = self.length / 2
+  	sorted = self.sort
+  	self.length.odd? ? sorted[middle] : 0.5 * (sorted[middle] + sorted[middle - 1])
+	end
 
-[1, 2, 3].median   #=> 2
-[1, 1, 4].median   #=> 1
-
-[].to_sentence                       #=> ""
-["john"].to_sentence                 #=> "john"
-["john", "paul"].to_sentence         #=> "john and paul"
-[1, "paul", 3, "ringo"].to_sentence  #=> "1, paul, 3 and ringo"
-
+	def to_sentence  
+  	unless (self.length < 2)
+    	last_word = self.pop.to_s
+    	sentence = (self.join ", ") << " and " << last_word
+  	else
+    	self.pop.to_s
+  	end
+	end
+end
 
 # ========================================================================================
 #  Problem 3 - re-implement bank statement
