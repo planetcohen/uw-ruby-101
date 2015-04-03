@@ -2,6 +2,9 @@
 #  Final Project: Game of Life
 # ========================================================================================
 
+require 'minitest/autorun'
+require 'tk'
+
 #  The Game of Life is a simplified model of evolution and natural selection
 #  invented by the mathematician James Conway.
 
@@ -45,6 +48,10 @@
 #  You choose how you want to render the current state of the board.
 #  ASCII? HTML? Something else?
 
+# Rendering employs a rendering strategy which is determined at the time a game is created.
+# There are two rendering strategy implementations: ConsoleRenderStrategy, which outputs the state
+# of the game to the console as a sequence of ASCII characters, and TkRenderStrategy, which draws
+# the state of the game to a Tk Canvas.
 
 #  ---------------------------------------------------------------------------------------
 #  Bonus: DSL
@@ -53,23 +60,315 @@
 #  - Your render method can then be formatted as the DSL, so that you can round-trip
 #    between the textual DSL representation and the running instance.
 
+# The game DSL has the following representation:
+# gol 2, rendering_strategy, "
+# .*
+# *.
+# "
+#
+# The first argument is the size of the board.
+# The second argument is a rendering strategy.
+# The third argument is a Ruby multiline string. Each row represents a row of the board. '*' represents a live cell,
+# whereas '.' represents a dead cell.
 
 #  ---------------------------------------------------------------------------------------
 #  Suggested Implementation
 
 module FinalProject
-  class GameOfLife
-    def initialize(size)
-      # randomly initialize the board
+  class Cell
+    NUM_NEIGHBORS_PER_CELL = 8
+
+    attr_accessor :row, :col, :alive
+    alias_method :alive?, :alive
+
+    def initialize(row, col, board)
+      @row = row
+      @col = col
+      @board = board
+      @alive = false
     end
+
+    # returns all neighboring cells
+    def neighbors
+      cells = []
+
+      (@row-1..@row+1).each do |row|
+        (@col-1..@col+1).each do |col|
+          cells << @board.cell_at(row, col)
+        end
+      end
+      cells.delete self
+
+      cells
+    end
+
+    # returns all live neighboring cells
+    def live_neighbors
+      neighbors.find_all { |cell| cell.alive? }
+    end
+  end
+
+  class Board
+    # creates a board of size size * size
+    # the top-left most cell is row 0, col(umn) 0
+    # the bottom-right most cell is row size - 1, col size - 1
+    def initialize(size)
+      @size = size
+      @board = []
+      (0...size).each do |row|
+        @board << []
+        (0...size).each do |col|
+          @board[row] << Cell.new(row, col, self)
+        end
+      end
+    end
+
+    def each(&block)
+      (0...@size).each do |row|
+        (0...@size).each do |col|
+          block.call @board[row][col]
+        end
+      end
+    end
+
+    def cell_at(row, col)
+      # allow wrapping in either direction
+      row += @size if row < 0
+      col += @size if col < 0
+
+      @board[row % @size][col % @size]
+    end
+
+    def to_s
+      @board.map do |row|
+        row.map do |cell|
+          cell.alive? ? '*' : '.'
+        end.join('')
+      end.join("\n")
+    end
+  end
+
+  class GameOfLife
+    def initialize(size, render_strategy, board = nil)
+      @render_strategy = render_strategy
+      if board.nil?
+        @board = Board.new(size)
+        # randomly initialize the board
+        @board.each { |cell| cell.alive = [true, false].sample }
+      else
+        @board = board
+      end
+    end
+
     def evolve
       # apply rules to each cell and generate new state
+      new_states = []
+      @board.each do |cell|
+        num_live_neighbors = cell.live_neighbors.length
+        if cell.alive?
+          new_state = num_live_neighbors == 2 || num_live_neighbors == 3
+        else
+          new_state = num_live_neighbors == 3
+        end
+        new_states << new_state
+      end
+
+      # update the board with new states
+      @board.each do |cell|
+        cell.alive = new_states.shift
+      end
     end
+
     def render
       # render the current state of the board
+      # delegate to the render strategy
+      @render_strategy.render @board
     end
+
     def run(num_generations)
       # evolve and render for num_generations
+      (1..num_generations).each do |i|
+        evolve
+        render
+      end
+    end
+  end
+end
+
+# render strategies
+
+module FinalProject
+  class ConsoleRenderStrategy
+    def render(board)
+      puts board.to_s
+    end
+  end
+
+  class TkRenderStrategy
+    CELL_SIZE = 20
+
+    def initialize(size)
+      @size = size
+      canvas_size = @size * CELL_SIZE
+      root = TkRoot.new
+      canvas = TkCanvas.new(root) do
+        place height: canvas_size , width: canvas_size
+      end
+
+      @cells = []
+      (0...@size).each do |row|
+        (0...@size).each do |col|
+          top = row * CELL_SIZE + 3
+          left = col * CELL_SIZE + 3
+          bottom = (row + 1) * CELL_SIZE - 3
+          right = (col + 1) * CELL_SIZE - 3
+          @cells << TkcOval.new(canvas, left, top, right, bottom, width: 0, fill: "white")
+        end
+      end
+    end
+
+    def render(board)
+      i = 0
+      board.each do |cell|
+        @cells[i][:fill] = cell.alive? ? "green" : "white"
+        i += 1
+      end
+    end
+  end
+end
+
+# game DSL
+
+module FinalProject
+  class GameOfLifeBuilder
+    def initialize(size, render_strategy)
+      @size = size
+      @render_strategy = render_strategy
+      @board = Board.new(size)
+    end
+
+    def build(board_string)
+      rows = board_string.split
+      rows.each_with_index do |row_string, row|
+        row_string.chars.each_with_index do |col_string, col|
+          @board.cell_at(row, col).alive = true if col_string == '*'
+          @board.cell_at(row, col).alive = false if col_string == '.'
+        end
+      end
+      GameOfLife.new(@size, @render_strategy, @board)
+    end
+  end
+end
+
+def gol(size, render_strategy, board_string)
+  builder = FinalProject::GameOfLifeBuilder.new(size, render_strategy)
+  builder.build(board_string)
+end
+
+# unit tests
+
+module FinalProject
+  class CellTest < Minitest::Test
+    def setup
+      @board = Board.new(8)
+    end
+
+    def test_neighbors
+      # each cell should have exactly 8 neighbors
+      @board.each { |cell| assert_equal Cell::NUM_NEIGHBORS_PER_CELL, cell.neighbors.count }
+    end
+
+    def test_live_neighbors
+      # each cell should have no live neighbors initially
+      @board.each { |cell| assert_equal 0, cell.live_neighbors.count }
+      # now set the top-left most cell as alive
+      # all neighbors of the alive cell should have live neighbors
+      cell0 = @board.cell_at(0, 0)
+      cell0.alive = true
+      cell0_neighbors = cell0.neighbors
+      @board.each do |cell|
+        if cell0_neighbors.include? cell
+          assert_equal 1, cell.live_neighbors.count
+        else
+          assert_equal 0, cell.live_neighbors.count
+        end
+      end
+    end
+  end
+
+  class BoardTest < Minitest::Test
+    def setup
+      @board = Board.new(2)
+      @cells = [@board.cell_at(0, 0), @board.cell_at(0, 1), @board.cell_at(1, 0), @board.cell_at(1, 1)]
+    end
+
+    def test_cell_at_wrapping
+      assert_equal @board.cell_at(0, 0), @board.cell_at(0, 2)
+      assert_equal @board.cell_at(0, 0), @board.cell_at(2, 0)
+      assert_equal @board.cell_at(0, 1), @board.cell_at(0, -1)
+      assert_equal @board.cell_at(0, 1), @board.cell_at(2, 1)
+      assert_equal @board.cell_at(1, 0), @board.cell_at(1, 2)
+      assert_equal @board.cell_at(1, 0), @board.cell_at(-1, 0)
+      assert_equal @board.cell_at(1, 1), @board.cell_at(1, -1)
+      assert_equal @board.cell_at(1, 1), @board.cell_at(-1, 1)
+    end
+
+    def test_each_order
+      i = 0
+      @board.each do |cell|
+        assert_equal @cells[i], cell
+        i += 1
+      end
+      assert @cells.count, i
+    end
+
+    def test_to_s
+      assert_equal "..\n..", @board.to_s
+      @cells[0].alive = true
+      assert_equal "*.\n..", @board.to_s
+      @cells[1].alive = true
+      assert_equal "**\n..", @board.to_s
+      @cells[2].alive = true
+      assert_equal "**\n*.", @board.to_s
+      @cells[3].alive = true
+      assert_equal "**\n**", @board.to_s
+    end
+  end
+
+  class GameDSLTest < Minitest::Test
+    class MyRenderStrategy
+      attr_reader :rendered_value
+
+      def render(board)
+        @rendered_value = board.to_s
+      end
+    end
+
+    def setup
+      @render_strategy = MyRenderStrategy.new
+    end
+
+    def test_two_by_two_game_dsl
+      game = gol 2, @render_strategy, '
+      .*
+      *.
+      '
+
+      game.render
+      assert_equal ".*\n*.", @render_strategy.rendered_value
+    end
+
+    def test_five_by_five_game_dsl
+      game = gol 5, @render_strategy, '
+      .***.
+      *...*
+      *...*
+      *...*
+      .***.
+      '
+
+      game.render
+      assert_equal ".***.\n*...*\n*...*\n*...*\n.***.", @render_strategy.rendered_value
     end
   end
 end
