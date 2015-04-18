@@ -10,23 +10,42 @@
 
 module Assignment07
   module Observable
-    def add_observer(obj)
-      # your implementation here
+    
+    attr_accessor :state
+    
+    def add_observer(observer)
+      @observers ||= []
+      @observers << observer unless @observers.include? observer
     end
-    def delete_observer(obj)
-      # your implementation here
+
+    def delete_observer(observer)
+      @observers.delete(observer) unless @observers == nil
     end
+
     def delete_observers
-      # your implementation here
+      @observers.clear unless @obervers == nil
     end
+
+    def count_observers
+      @observers.count
+    end
+
     def changed(new_state=true)
-      # your implementation here
+      @state = new_state
     end
+
     def changed?
-      # your implementation here
+      @state unless @state == nil
     end
+    
     def notify_observers(*args)
-      # your implementation here
+      if @state == true
+        @observers.each do |observer|
+          observer.update(*args)
+        end
+        @state = false
+      end
     end
+
   end
 end
