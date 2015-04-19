@@ -1,75 +1,126 @@
-# ========================================================================================
-#  Final Project: Game of Life
-# ========================================================================================
+module FinalProject
+class Cell
+  attr_accessor :alive, :live_neighbors, :next_state
+  def initialize(state=false)
+  	@alive = state
+  end
 
-#  The Game of Life is a simplified model of evolution and natural selection
-#  invented by the mathematician James Conway.
+  def staying_alive
+  	self.next_state = @alive ? [2,3].include?(@live_neighbors) : @live_neighbors == 3
+  end
 
-#  http://en.wikipedia.org/wiki/Conway's_Game_of_Life
+  def to_i
+    @alive? 1 : 0
+  end
 
+  def to_s
+    @alive ? '*' : ' '
+  end
+end
 
-#  ---------------------------------------------------------------------------------------
-#  Rules
+class GameOfLife
+  attr_accessor :grid, :size
 
-#  You have a grid of cells in 2 dimensions.
+  def initialize(size=50)
+  	@size = size
+    #creates a two dimensional array of @size by @size unqiue cells with random initial states
+  	@grid = Array.new(@size) {Array.new(@size) { Cell.new(rand(3).zero?)}}
+  end
+  
+  def evolve
+  	# apply rules to each cell and generate new state
+    @grid.each_with_index do |row, y|
+      row.each_with_index do |cell, x|
+        cell.live_neighbors = alive_neighbours(x, y)
+      end
+    end
+    @grid.each {|row| row.each {|cell| cell.staying_alive}}
+  end
 
-#  Each cell has 8 neighbors:
-#  - top, right, bottom, left
-#  - top-left, top-right, bottom-right, bottom-left
+  def alive_neighbours(x, y)
+    #counting neighbor cells with state alive = true
+    [[-1, 0], [1, 0], [-1, 1], [0, 1], [1, 1], [-1, -1], [0, -1], [1, -1]].inject(0) do |sum, (neighbor_col, neighbor_row)|
+      sum + @grid[(y + neighbor_row) % @size][(x + neighbor_col) % @size].to_i
+    end
+  end
 
-#  Each cell has 2 possible states: alive or dead.
+  def render
+    #renders @size by @size "grid" with "*" representing cells with alive = true
+  	@grid.map { |row| row.join }.join("\n")
+  end
 
-#  if a cell is alive and
-#  - has fewer than 2 live neighbors, it dies 
-#  - has more than 3 live neighbors, it dies
-#  - has 2 or 3 live neighbors, it lives to next generation
+  def run(num_generations=20)
+  	(1..num_generations).each do |i|
+  		evolve
+  		system "clear"
+  		puts render
+      sleep(0.5)
+  	end
+  end
+end
+end
 
-#  if cell is dead and
-#  - has exactly 3 live neighbors, it becomes a live cell
-
-#  edges of board:
-#  - pretend the board is folded onto itself
-#  - the edges touch each other
-
-
-#  ---------------------------------------------------------------------------------------
-#  Tests
-
-#  You must have MiniTest unit tests for your class to validate your implementation.
-#  You might need to add methods or change the method signatures to enable testing.
-
-
-#  ---------------------------------------------------------------------------------------
-#  Rendering
-
-#  You choose how you want to render the current state of the board.
-#  ASCII? HTML? Something else?
-
-
-#  ---------------------------------------------------------------------------------------
-#  Bonus: DSL
-
-#  - Create a DSL that represents a state of the game.
-#  - Your render method can then be formatted as the DSL, so that you can round-trip
-#    between the textual DSL representation and the running instance.
-
-
-#  ---------------------------------------------------------------------------------------
-#  Suggested Implementation
+#-----------------------------------------------------------------------------------
+require "minitest/autorun"
 
 module FinalProject
-  class GameOfLife
-    def initialize(size)
-      # randomly initialize the board
+
+  class TestCell < MiniTest::Unit::TestCase
+    def setup
+      @cell = Cell.new(true)
     end
-    def evolve
-      # apply rules to each cell and generate new state
+
+    def test_cell_instance
+      assert_instance_of Cell, @cell
     end
-    def render
-      # render the current state of the board
+
+    def test_cell_attributes
+      assert_respond_to @cell, :alive
+      assert_respond_to @cell, :live_neighbors
+      assert_respond_to @cell, :next_state
     end
-    def run(num_generations)
-      # evolve and render for num_generations
+
+    def test_cell_state
+      assert @cell.alive == true
     end
+
+    def test_cell_next_state
+      assert @cell.next_state == nil
+    end
+
+    def test_live_neighbors
+      assert @cell.live_neighbors == nil
+    end
+
+    def test_staying_alive
+      @live_neighbors == 4
+      assert @cell.staying_alive == false
+    end
+
+  end
+
+  class TestGameBoard < MiniTest::Unit::TestCase
+  	def setup
+  	  @game = GameOfLife.new(3)
+  	end
+
+  	def test_gol_instance
+  	  assert_instance_of GameOfLife, @game
+
+  	  assert_respond_to @game, :grid
+  	  assert_respond_to @game, :size
+  	end
+
+  	def test_gol_grid
+  	  assert_equal 3, @game.size
+  	  assert @game.grid.is_a?(Array)
+  	  @game.grid.each do |row|
+        assert row.is_a?(Array) 
+        row.each do |cell|
+          assert_instance_of Cell, cell
+          assert_equal cell.alive, cell.alive
+        end
+      end
+  	end
   end
 end
