@@ -1,0 +1,23 @@
+h1, h2, th, td {
+    font-family: Helvetica
+}
+
+.date {
+    width: 30%;
+    text-align: left;
+}
+
+.payee {
+    width: 60%;
+    text-align: left;
+}
+
+.label {
+    font-weight: bold;
+    width: 50%;
+    text-align: left;
+}
+
+.amount {
+    text-align: right;
+}
