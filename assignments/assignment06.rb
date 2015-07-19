@@ -7,26 +7,60 @@
 
 # implement a PriorityQueue, validate using MiniTest unit tests
 
+require 'minitest/autorun'
+
 class PriorityQueue
   def initialize
-    # your implementation here
+    @low_priority = []
+    @med_priority = []
+    @high_priority = []
   end
   def enqueue(item, priority=:medium)
-    # your implementation here
+    case priority
++      when :high
++        @high_priority << item
++      when :medium
++        @med_priority << item
++      when :low
++        @low_priority << item
++    end
   end
   def dequeue
-    # your implementation here
+    if @high_priority.empty? nil : @high_priority.shift
+    if @med_priority.empty? nil : @med_priority.shift
+    if @low_priority.empty? nil : @low_priorirt.shift
   end
   def empty?
-    # your implementation here
+    length == 0
   end
   def peek
-    # your implementation here
+    if @high_priority.empty? nil : @high_priority.first
+    if @med_priority.empty? nil : @med_priority.first
+    if @low_priority.empty? nil : @low_priorirt.first
   end
   def length
-    # your implementation here
+    @items_high.length + @items_medium.length + @items_low.length
   end
 end
+
++class PriorityQueueTest < Minitest::Test
++  def priority_test_queue
++    pq = PriorityQueue.new
++    assert_empty pq
++    pq.enqueue "first"
++    refute_empty pq
++    pq.enqueue "top", :high
++    pq.enqueue "last", :low
++    pq.enqueue "second"
++    pq.enqueue "another top", :high
++    assert_equal 5, pq.length
++    assert_equal "top", pq.dequeue
++    assert_equal "another top", pq.dequeue
++    assert_equal "first", pq.dequeue
++    assert_equal "second", pq.dequeue
++    assert_equal "last", pq.dequeue
++  end
++end
 
 # expected results:
 pq = PriorityQueue.new
@@ -54,16 +88,31 @@ pq.dequeue    #=> "last"
 
 # render a Recipe object to Recipe DSL
 
+
 class Recipe
   attr_accessor :steps, :ingredients, :name, :category, :prep_time, :rating
   def initialize(name)
     @name = name
   end
   
-  def render_dsl
-    # your code here
+  def render_ingredients
+    return if ingredients.none?
+    <<-DSL
+      ingredients do
+      #{ingredients.map {|i| "x \"#{x}\""}}.join "\n"}
+    end
+    DSL
   end
-end
+  
+  def render_dsl
+    <<-DSL
+      recipe "#{name}" do
+      rating "#{rating}"
+      #{render_ingredients}
+      end
+     DSL
+   end
+  end
 
 class RecipeBuilder
   def recipe(name, &block)
