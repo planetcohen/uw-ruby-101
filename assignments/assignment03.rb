@@ -7,6 +7,20 @@
 
 # re-implement titleize and palindrome? as methods on String
 
+class String
+	
+	def titleize
+		split(" ").map(&:capitalize).join(" ") 
+	end
+
+	def palindrome?
+  	    forward = downcase.delete(" ").delete(",")
+  	    backward = forward.reverse
+        forward == backward
+	end
+end
+
+
 "hEllo WORLD".titleize                         #=> "Hello World"
 "gooDbye CRUel wORLD".titleize                 #=> "Goodbye Cruel World"
 
@@ -22,6 +36,49 @@
 #  Problem 2 - re-implement mean, median, to_sentence
 
 # re-implement mean, median, to_sentence as methods on Array
+
+class Array
+
+    def to_sentence
+        count = self.count
+        if count > 2
+            last = self.pop
+            sentence ="#{self.join(", ")}, and #{last}"
+            return sentence
+        elsif count == 2
+            last = pop
+            sentence ="#{self.join(", ")} and #{last}"
+            return sentence
+        else
+            return "#{self}"
+        end
+    end
+
+    def median
+        count = self.count
+        total = 0
+        if !(count.even?)
+            middle = (count - 1)/2
+            return self[middle]
+        else
+            right = (count/2)
+            left = (count/2)-1
+            return (self[left] + self[right])/2.to_f
+        end
+    end
+
+    def mean
+        count = self.count.to_f
+        total = 0
+        self.each do |num|
+            total = num + total
+        end
+        mean = (total / count).to_f
+        puts count
+        puts total
+        return mean
+    end
+end
 
 # Your method should generate the following results:
 [1, 2, 3].mean     #=> 2
